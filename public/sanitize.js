@@ -20,6 +20,17 @@
     ["/outfield.html", "/outfield"],
   ]);
   const blockedFilePattern = /\.(?:zip|stl|3mf|stp|step)(?:$|[?#])/i;
+  const brandAssetMap = new Map([
+    ["/images/home/1d60d202169655264d14f5a6a3b3a621(1).webp", "/brand-safe/images/hero-d12.webp"],
+    ["/images/home/人形机器人正面(1).jpg", "/brand-safe/images/d12-front.webp"],
+    ["/images/home/wuba-q20-hero-v2.webp", "/brand-safe/images/hero-q20.webp"],
+    ["/images/home/746bcde2b8d2360fce66a855ecca3711(1).webp", "/brand-safe/images/q20-public-safety.webp"],
+    ["/images/home/2702d950300af445ee35a1f7c88edbb0(1).webp", "/brand-safe/images/q20-field.webp"],
+    ["/images/home/wuba-applications-v2.webp", "/brand-safe/images/applications.webp"],
+    ["/images/equipment/09-humanoid.webp", "/brand-safe/images/equipment-09.webp"],
+    ["/images/equipment/10-q25.webp", "/brand-safe/images/equipment-10.webp"],
+    ["/images/ai-training-center/seated-robot-2-reference.webp", "/brand-safe/images/ai-seated-robot-2.webp"],
+  ]);
   const brandPatterns = [
     [/五八智能科技（杭州）有限公司/g, "具身智能"],
     [/五八智能/g, "具身智能"],
@@ -68,6 +79,30 @@
     return next;
   };
 
+  const mapBrandAsset = (value) => {
+    if (!value) return value;
+    try {
+      const url = new URL(value, window.location.href);
+      const path = decodeURI(url.pathname);
+      return brandAssetMap.get(path) || value;
+    } catch {
+      return value;
+    }
+  };
+
+  const mapSourceSet = (value) =>
+    value
+      .split(",")
+      .map((candidate) => {
+        const trimmed = candidate.trim();
+        if (!trimmed) return trimmed;
+        const splitAt = trimmed.search(/\s/);
+        const source = splitAt === -1 ? trimmed : trimmed.slice(0, splitAt);
+        const descriptor = splitAt === -1 ? "" : trimmed.slice(splitAt);
+        return `${mapBrandAsset(source)}${descriptor}`;
+      })
+      .join(", ");
+
   const isDirectDownload = (anchor) => {
     const rawHref = anchor.getAttribute("href") || "";
     if (anchor.hasAttribute("download")) return true;
@@ -103,13 +138,65 @@
   const sanitizeLogo = (image) => {
     if (!(image instanceof HTMLImageElement)) return;
     if (!image.src.includes("wuba-intelligence-logo")) return;
-    image.style.display = "none";
+    image.setAttribute("src", "/brand-safe/embodied-mark.svg");
+    image.removeAttribute("srcset");
+    image.style.display = "";
+    image.setAttribute("alt", "");
+    image.setAttribute("aria-hidden", "true");
     const host = image.parentElement;
     if (!host || host.querySelector(".sanitized-brand-name")) return;
     const name = document.createElement("span");
     name.className = "sanitized-brand-name";
     name.textContent = "具身智能";
     host.appendChild(name);
+  };
+
+  const sanitizeImageSource = (image) => {
+    if (!(image instanceof HTMLImageElement)) return;
+    sanitizeLogo(image);
+    const rawSource = image.getAttribute("src");
+    const mappedSource = mapBrandAsset(rawSource);
+    if (mappedSource && mappedSource !== rawSource) {
+      image.setAttribute("src", mappedSource);
+    }
+    const rawSourceSet = image.getAttribute("srcset");
+    if (rawSourceSet) {
+      const mappedSourceSet = mapSourceSet(rawSourceSet);
+      if (mappedSourceSet !== rawSourceSet) {
+        image.setAttribute("srcset", mappedSourceSet);
+      }
+    }
+  };
+
+  const sanitizePictureSource = (source) => {
+    if (!(source instanceof HTMLSourceElement)) return;
+    const rawSourceSet = source.getAttribute("srcset");
+    if (!rawSourceSet) return;
+    const mappedSourceSet = mapSourceSet(rawSourceSet);
+    if (mappedSourceSet !== rawSourceSet) {
+      source.setAttribute("srcset", mappedSourceSet);
+    }
+  };
+
+  const ensureBrandNameIcon = (name) => {
+    if (!(name instanceof HTMLElement)) return;
+    const host = name.parentElement;
+    if (host?.querySelector('img[src*="/brand-safe/embodied-mark.svg"]')) return;
+    if (name.querySelector(".sanitized-brand-icon")) return;
+    const icon = document.createElement("img");
+    icon.className = "sanitized-brand-icon";
+    icon.src = "/brand-safe/embodied-mark.svg";
+    icon.alt = "";
+    icon.setAttribute("aria-hidden", "true");
+    Object.assign(icon.style, {
+      width: "32px",
+      height: "32px",
+      marginRight: "10px",
+      borderRadius: "8px",
+      objectFit: "cover",
+      flex: "0 0 auto",
+    });
+    name.prepend(icon);
   };
 
   const sanitizeElement = (root) => {
@@ -126,11 +213,23 @@
       if (next !== textNode.nodeValue) textNode.nodeValue = next;
     }
 
-    const logos = [
-      ...(scope.matches?.('img[src*="wuba-intelligence-logo"]') ? [scope] : []),
-      ...scope.querySelectorAll('img[src*="wuba-intelligence-logo"]'),
+    const images = [
+      ...(scope instanceof HTMLImageElement ? [scope] : []),
+      ...scope.querySelectorAll("img"),
     ];
-    for (const image of logos) sanitizeLogo(image);
+    for (const image of images) sanitizeImageSource(image);
+
+    const sources = [
+      ...(scope instanceof HTMLSourceElement ? [scope] : []),
+      ...scope.querySelectorAll("source[srcset]"),
+    ];
+    for (const source of sources) sanitizePictureSource(source);
+
+    const brandNames = [
+      ...(scope.matches?.(".sanitized-brand-name") ? [scope] : []),
+      ...scope.querySelectorAll(".sanitized-brand-name"),
+    ];
+    for (const name of brandNames) ensureBrandNameIcon(name);
 
     const anchors = [
       ...(scope instanceof HTMLAnchorElement ? [scope] : []),
@@ -233,6 +332,9 @@
   scheduleSanitation(document);
   const observer = new MutationObserver((records) => {
     for (const record of records) {
+      if (record.type === "attributes" && record.target instanceof Element) {
+        scheduleSanitation(record.target);
+      }
       for (const node of record.addedNodes) {
         if (node instanceof Element) scheduleSanitation(node);
         if (node.nodeType === Node.TEXT_NODE && node.parentElement) {
@@ -241,5 +343,10 @@
       }
     }
   });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["src", "srcset"],
+  });
 })();

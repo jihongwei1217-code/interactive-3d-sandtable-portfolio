@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">具身智能中性标识</title>
+  <rect width="64" height="64" rx="16" fill="#123f49"/>
+  <path d="M19 43 32 18l13 25Z" fill="none" stroke="#f7fbfa" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="32" cy="18" r="5" fill="#35c6a4"/>
+  <circle cx="19" cy="43" r="5" fill="#35c6a4"/>
+  <circle cx="45" cy="43" r="5" fill="#35c6a4"/>
+  <circle cx="32" cy="34" r="5" fill="#ff6a3d"/>
+</svg>

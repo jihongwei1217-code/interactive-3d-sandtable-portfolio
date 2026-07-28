@@ -36,7 +36,8 @@
       box-shadow: 0 4px 18px rgb(24 44 52 / 8%);
     }
     .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .logo { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 auto; border-radius: 7px; color: #fff; background: var(--brand); font-size: 13px; font-weight: 900; }
+    .logo { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 auto; border-radius: 7px; overflow: hidden; color: #fff; background: var(--brand); font-size: 13px; font-weight: 900; }
+    .logo img { display: block; width: 100%; height: 100%; object-fit: cover; }
     .brand-copy { min-width: 0; }
     h1 { overflow: hidden; margin: 0; font-size: clamp(15px, 2vw, 20px); text-overflow: ellipsis; white-space: nowrap; }
     .subtitle { margin-top: 3px; color: var(--muted); font-size: 10px; }
@@ -111,7 +112,7 @@
 <body>
   <header>
     <div class="brand">
-      <span class="logo">58</span>
+      <span class="logo"><img src="/brand-safe/embodied-mark.svg" alt="" aria-hidden="true"></span>
       <div class="brand-copy">
         <h1>浙江省人形机器人中试平台 · 互动3D沙盘</h1>
         <div class="subtitle"><b>1:25</b> · 推荐底板 600 × 450 mm · 设备可独立打印和移动</div>
