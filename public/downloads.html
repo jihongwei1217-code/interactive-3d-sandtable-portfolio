@@ -29,18 +29,18 @@
   </style>
 
 <style id="public-privacy-style">
-  html{visibility:hidden}
+  html{visibility:visible}
   img[src*="wuba-intelligence-logo"]{display:none!important}
   .sanitized-brand-name{display:inline-flex;align-items:center;min-height:38px;color:inherit;font-size:18px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
   .download-disabled{cursor:pointer!important}
 </style>
-<script>setTimeout(function(){document.documentElement.style.visibility="visible"},1500)</script>
+
 <script defer src="/sanitize.js"></script>
 </head>
 <body>
   <header class="site-header">
     <a class="site-brand" href="/"><span class="brand-logo-panel"><span class="sanitized-brand-name">具身智能</span></span><span><strong>3D打印文件下载中心</strong><small id="download-summary">正在读取 STL · STP · 3MF 校验包</small></span></a>
-    <nav class="site-nav" aria-label="主要页面"><a href="/studio.html">工作台</a><a href="/models.html">室内设备</a><a href="/outfield.html">测试外场</a><a href="/planner.html">自由排布</a><a href="/downloads.html" aria-current="page">下载中心</a></nav>
+    <nav class="site-nav" aria-label="主要页面"><a href="/studio">工作台</a><a href="/models">室内设备</a><a href="/outfield">测试外场</a><a href="/planner">自由排布</a><a href="/downloads" aria-current="page">下载中心</a></nav>
   </header>
 
   <main class="shell">
@@ -80,11 +80,11 @@
         const image = item?.referenceImage || "/images/home/wuba-pilot-lab-v2.webp";
         const packageFile = piece.printPackageFile;
         const anchor = index === 0 ? ` id="model-${esc(model.code)}"` : "";
-        return `<tr${anchor}><td><div class="file-name"><img src="${esc(image)}" alt="${esc(piece.title)}参考图" onerror="this.onerror=null;this.src='/images/home/wuba-pilot-lab-v2.webp'"><span><b>${esc(piece.title)}</b><small>${esc(model.code)} · ${esc(model.title)}</small></span></div></td><td>${esc(model.scale)}</td><td>${size(piece.sizeMm)}</td><td>${esc(model.method || item?.method || "FDM / 树脂")}</td><td><a class="table-link primary" href="${esc(packageFile)}" download>STL＋STP＋3MF</a> ${index === 0 && assemblyByCode[model.code] ? `<a class="table-link" href="${esc(assemblyByCode[model.code].url)}" download>整机STP</a>` : ""} <a class="table-link" href="/item.html?id=${encodeURIComponent(item?.id || model.code)}&mode=color">查看</a></td></tr>`;
+        return `<tr${anchor}><td><div class="file-name"><img src="${esc(image)}" alt="${esc(piece.title)}参考图" onerror="this.onerror=null;this.src='/images/home/wuba-pilot-lab-v2.webp'"><span><b>${esc(piece.title)}</b><small>${esc(model.code)} · ${esc(model.title)}</small></span></div></td><td>${esc(model.scale)}</td><td>${size(piece.sizeMm)}</td><td>${esc(model.method || item?.method || "FDM / 树脂")}</td><td><a class="table-link primary" href="${esc(packageFile)}" download>STL＋STP＋3MF</a> ${index === 0 && assemblyByCode[model.code] ? `<a class="table-link" href="${esc(assemblyByCode[model.code].url)}" download>整机STP</a>` : ""} <a class="table-link" href="/item?id=${encodeURIComponent(item?.id || model.code)}&mode=color">查看</a></td></tr>`;
       })).join("");
-      document.getElementById("outfield-files").innerHTML = catalog.outfieldIds.map((id) => { const item=byId[id]; return `<tr id="model-${esc(item.id)}"><td><div class="file-name"><img src="${esc(item.referenceImage)}" alt="${esc(item.shortTitle)}现场参考图" onerror="this.onerror=null;this.src='/images/outfield/photo/OF01.webp'"><span><b>${esc(item.shortTitle)}</b><small>${esc(item.code)} · 实拍重建 · ${esc(item.photoCount)}张参考</small></span></div></td><td>${esc(item.category)}</td><td>${size(item.dimensionsMm)}</td><td>${esc(item.support)}</td><td><a class="table-link primary" href="${esc(item.printPackageFile)}" download>STL＋STP＋3MF</a> ${item.stepPackageFile && item.stepPackageFile !== item.printPackageFile ? `<a class="table-link" href="${esc(item.stepPackageFile)}" download>设施STP</a>` : ""} <a class="table-link" href="/item.html?id=${encodeURIComponent(item.id)}&mode=color">查看</a></td></tr>`; }).join("");
+      document.getElementById("outfield-files").innerHTML = catalog.outfieldIds.map((id) => { const item=byId[id]; return `<tr id="model-${esc(item.id)}"><td><div class="file-name"><img src="${esc(item.referenceImage)}" alt="${esc(item.shortTitle)}现场参考图" onerror="this.onerror=null;this.src='/images/outfield/photo/OF01.webp'"><span><b>${esc(item.shortTitle)}</b><small>${esc(item.code)} · 实拍重建 · ${esc(item.photoCount)}张参考</small></span></div></td><td>${esc(item.category)}</td><td>${size(item.dimensionsMm)}</td><td>${esc(item.support)}</td><td><a class="table-link primary" href="${esc(item.printPackageFile)}" download>STL＋STP＋3MF</a> ${item.stepPackageFile && item.stepPackageFile !== item.printPackageFile ? `<a class="table-link" href="${esc(item.stepPackageFile)}" download>设施STP</a>` : ""} <a class="table-link" href="/item?id=${encodeURIComponent(item.id)}&mode=color">查看</a></td></tr>`; }).join("");
       document.getElementById("scene-title").textContent = `完整场景 STP 装配体 · ${stepCatalog.counts.scenePackages} 套`;
-      document.getElementById("scene-files").innerHTML = stepCatalog.scenePackages.map((scene) => `<tr><td><div class="file-name"><span><b>${esc(scene.title)}</b><small>${esc(scene.number)} · ${esc(scene.kind)}</small></span></div></td><td>${esc(scene.zone || "mixed")}</td><td>${size(scene.dimensionsMm)}</td><td>${esc(scene.componentCount)}</td><td><a class="table-link primary" href="${esc(scene.url)}" download>下载STP ZIP</a> <a class="table-link" href="/planner.html?template=${encodeURIComponent(scene.templateId)}">打开沙盘</a></td></tr>`).join("");
+      document.getElementById("scene-files").innerHTML = stepCatalog.scenePackages.map((scene) => `<tr><td><div class="file-name"><span><b>${esc(scene.title)}</b><small>${esc(scene.number)} · ${esc(scene.kind)}</small></span></div></td><td>${esc(scene.zone || "mixed")}</td><td>${size(scene.dimensionsMm)}</td><td>${esc(scene.componentCount)}</td><td><a class="table-link primary" href="${esc(scene.url)}" download>下载STP ZIP</a> <a class="table-link" href="/planner?template=${encodeURIComponent(scene.templateId)}">打开沙盘</a></td></tr>`).join("");
     }).catch((error) => { console.error(error); document.getElementById("indoor-files").innerHTML='<tr><td colspan="5">文件清单加载失败，请刷新页面。</td></tr>'; document.getElementById("outfield-files").innerHTML='<tr><td colspan="5">文件清单加载失败，请刷新页面。</td></tr>'; document.getElementById("scene-files").innerHTML='<tr><td colspan="5">场景清单加载失败，请刷新页面。</td></tr>'; });
   </script>
 </body>

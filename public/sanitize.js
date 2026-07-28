@@ -1,15 +1,23 @@
 (() => {
   const originalOrigin = "https://wuba.xiaofenglab.com";
-  const localPages = new Set([
-    "/",
-    "/home.html",
-    "/models.html",
-    "/planner.html",
-    "/viewer.html",
-    "/item.html",
-    "/downloads.html",
-    "/studio.html",
-    "/outfield.html",
+  const localPageAliases = new Map([
+    ["/", "/"],
+    ["/home", "/"],
+    ["/home.html", "/"],
+    ["/models", "/models"],
+    ["/models.html", "/models"],
+    ["/planner", "/planner"],
+    ["/planner.html", "/planner"],
+    ["/viewer", "/viewer"],
+    ["/viewer.html", "/viewer"],
+    ["/item", "/item"],
+    ["/item.html", "/item"],
+    ["/downloads", "/downloads"],
+    ["/downloads.html", "/downloads"],
+    ["/studio", "/studio"],
+    ["/studio.html", "/studio"],
+    ["/outfield", "/outfield"],
+    ["/outfield.html", "/outfield"],
   ]);
   const blockedFilePattern = /\.(?:zip|stl|3mf|stp|step)(?:$|[?#])/i;
   const brandPatterns = [
@@ -77,6 +85,21 @@
     anchor.setAttribute("aria-label", `${anchor.textContent?.trim() || "下载"}（仅展示）`);
   };
 
+  const normalizeLocalPageLink = (anchor) => {
+    const rawHref = anchor.getAttribute("href") || "";
+    if (!rawHref || rawHref.startsWith("#")) return;
+    let url;
+    try {
+      url = new URL(rawHref, window.location.href);
+    } catch {
+      return;
+    }
+    if (url.origin !== window.location.origin && url.origin !== originalOrigin) return;
+    const localPath = localPageAliases.get(url.pathname);
+    if (!localPath) return;
+    anchor.setAttribute("href", `${localPath}${url.search}${url.hash}`);
+  };
+
   const sanitizeLogo = (image) => {
     if (!(image instanceof HTMLImageElement)) return;
     if (!image.src.includes("wuba-intelligence-logo")) return;
@@ -103,21 +126,35 @@
       if (next !== textNode.nodeValue) textNode.nodeValue = next;
     }
 
-    const elements = [scope, ...scope.querySelectorAll("*")];
-    for (const element of elements) {
-      if (element instanceof HTMLImageElement) {
-        sanitizeLogo(element);
-        if (element.alt) element.alt = replaceBrandText(element.alt);
+    const logos = [
+      ...(scope.matches?.('img[src*="wuba-intelligence-logo"]') ? [scope] : []),
+      ...scope.querySelectorAll('img[src*="wuba-intelligence-logo"]'),
+    ];
+    for (const image of logos) sanitizeLogo(image);
+
+    const anchors = [
+      ...(scope instanceof HTMLAnchorElement ? [scope] : []),
+      ...scope.querySelectorAll("a"),
+    ];
+    for (const anchor of anchors) {
+      normalizeLocalPageLink(anchor);
+      disableDownload(anchor);
+    }
+
+    const labelled = [
+      ...(scope.matches?.("[aria-label],[title]") ? [scope] : []),
+      ...scope.querySelectorAll("[aria-label],[title]"),
+    ];
+    for (const element of labelled) {
+      const ariaLabel = element.getAttribute("aria-label");
+      const title = element.getAttribute("title");
+      if (ariaLabel) {
+        const next = replaceBrandText(ariaLabel);
+        if (next !== ariaLabel) element.setAttribute("aria-label", next);
       }
-      if (element instanceof HTMLAnchorElement) disableDownload(element);
-      if (element.hasAttribute?.("aria-label")) {
-        element.setAttribute(
-          "aria-label",
-          replaceBrandText(element.getAttribute("aria-label") || ""),
-        );
-      }
-      if (element.hasAttribute?.("title")) {
-        element.setAttribute("title", replaceBrandText(element.getAttribute("title") || ""));
+      if (title) {
+        const next = replaceBrandText(title);
+        if (next !== title) element.setAttribute("title", next);
       }
     }
 
@@ -154,10 +191,10 @@
         } catch {
           return;
         }
-        if (url.origin === originalOrigin && localPages.has(url.pathname)) {
+        const localPath = localPageAliases.get(url.pathname);
+        if (url.origin === originalOrigin && localPath) {
           event.preventDefault();
           event.stopImmediatePropagation();
-          const localPath = url.pathname === "/" ? "/home.html" : url.pathname;
           window.location.assign(`${localPath}${url.search}${url.hash}`);
           return;
         }
@@ -172,18 +209,37 @@
     true,
   );
 
-  sanitizeElement(document);
+  document.documentElement.style.visibility = "visible";
+
+  const pendingRoots = new Set();
+  let sanitationScheduled = false;
+  const flushSanitation = () => {
+    sanitationScheduled = false;
+    const roots = [...pendingRoots];
+    pendingRoots.clear();
+    for (const root of roots) sanitizeElement(root);
+  };
+  const scheduleSanitation = (root) => {
+    pendingRoots.add(root);
+    if (sanitationScheduled) return;
+    sanitationScheduled = true;
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(flushSanitation, { timeout: 500 });
+    } else {
+      window.setTimeout(flushSanitation, 0);
+    }
+  };
+
+  scheduleSanitation(document);
   const observer = new MutationObserver((records) => {
     for (const record of records) {
       for (const node of record.addedNodes) {
-        if (node instanceof Element) sanitizeElement(node);
+        if (node instanceof Element) scheduleSanitation(node);
         if (node.nodeType === Node.TEXT_NODE && node.parentElement) {
-          sanitizeElement(node.parentElement);
+          scheduleSanitation(node.parentElement);
         }
       }
     }
   });
   observer.observe(document.documentElement, { childList: true, subtree: true });
-
-  document.documentElement.style.visibility = "visible";
 })();

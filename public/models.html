@@ -128,12 +128,12 @@
   </style>
 
 <style id="public-privacy-style">
-  html{visibility:hidden}
+  html{visibility:visible}
   img[src*="wuba-intelligence-logo"]{display:none!important}
   .sanitized-brand-name{display:inline-flex;align-items:center;min-height:38px;color:inherit;font-size:18px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
   .download-disabled{cursor:pointer!important}
 </style>
-<script>setTimeout(function(){document.documentElement.style.visibility="visible"},1500)</script>
+
 <script defer src="/sanitize.js"></script>
 </head>
 <body>
@@ -146,7 +146,7 @@
       <button type="button" data-catalog-mode="color">实物配色版</button>
       <button type="button" data-catalog-mode="clay">单色打印版</button>
     </div>
-    <a class="overall-link" href="/studio.html">返回素材工作台</a>
+    <a class="overall-link" href="/studio">返回素材工作台</a>
   </header>
 
   <main>
@@ -211,7 +211,7 @@
       "10": "/images/equipment/10-q25.webp",
     };
     const formatSize = (item) => item.dimensionsMm.map((value) => Number(value.toFixed(1))).join(" × ") + " mm";
-    const itemUrl = (id, mode) => `/item.html?id=${encodeURIComponent(id)}&mode=${mode}`;
+    const itemUrl = (id, mode) => `/item?id=${encodeURIComponent(id)}&mode=${mode}`;
     const uniqueColors = (appearance) => [...new Set(Object.values(appearance.palette))].slice(0, 6);
 
     function syncModeUi() {
@@ -260,7 +260,7 @@
               <div class="title-row"><h3>${item.title}</h3><span class="method">${item.method}</span></div>
               <p class="detail">${profile.detail}</p>
               <div class="meta-row"><span class="size">缩小后 ${formatSize(item)}</span><span class="swatches" aria-label="主要配色">${swatches}</span></div>
-              <div class="card-links"><a data-mode-link="color" href="${itemUrl(item.id, "color")}">彩色3D</a><a data-mode-link="clay" href="${itemUrl(item.id, "clay")}">单色3D</a><a href="${item.printPackageFile || `/downloads.html#model-${encodeURIComponent(item.code)}`}" ${item.printPackageFile ? "download" : ""}>三格式打印包</a></div>
+              <div class="card-links"><a data-mode-link="color" href="${itemUrl(item.id, "color")}">彩色3D</a><a data-mode-link="clay" href="${itemUrl(item.id, "clay")}">单色3D</a><a href="${item.printPackageFile || `/downloads#model-${encodeURIComponent(item.code)}`}" ${item.printPackageFile ? "download" : ""}>三格式打印包</a></div>
             </div>
           </article>`;
         }).join("");
@@ -284,7 +284,7 @@
       url.searchParams.set("mode", currentMode);
       history.replaceState(null, "", url);
       syncModeUi();
-      document.querySelectorAll(".part a[href*='item.html']").forEach((link) => {
+      document.querySelectorAll(".part a[href*='/item']").forEach((link) => {
         const target = new URL(link.href);
         target.searchParams.set("mode", currentMode);
         link.href = target;

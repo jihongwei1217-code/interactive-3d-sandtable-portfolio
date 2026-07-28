@@ -100,12 +100,12 @@
   </style>
 
 <style id="public-privacy-style">
-  html{visibility:hidden}
+  html{visibility:visible}
   img[src*="wuba-intelligence-logo"]{display:none!important}
   .sanitized-brand-name{display:inline-flex;align-items:center;min-height:38px;color:inherit;font-size:18px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
   .download-disabled{cursor:pointer!important}
 </style>
-<script>setTimeout(function(){document.documentElement.style.visibility="visible"},1500)</script>
+
 <script defer src="/sanitize.js"></script>
 </head>
 <body>
@@ -127,8 +127,8 @@
       <button class="tool is-active" id="toggle-grid" type="button" aria-pressed="true" title="显示或隐藏参考网格">参考网格</button>
       <button class="tool is-active" id="toggle-labels" type="button" aria-pressed="true" title="显示或隐藏设备名称">设备名称</button>
       <button class="tool" id="fullscreen" type="button" title="进入全屏查看">全屏</button>
-      <a class="catalog-link" href="/studio.html">素材工作台</a>
-      <a class="catalog-link" href="/models.html">逐件查看</a>
+      <a class="catalog-link" href="/studio">素材工作台</a>
+      <a class="catalog-link" href="/models">逐件查看</a>
     </div>
   </header>
 
@@ -177,7 +177,7 @@
         const mode = readMode();
         document.getElementById("equipment-list").innerHTML = catalog.equipmentIds.map((id) => {
           const item = byId[id];
-          return `<a class="equipment" href="/item.html?id=${item.id}&mode=${mode}"><span class="code">${item.code}</span><b>${item.shortTitle}</b><span>›</span></a>`;
+          return `<a class="equipment" href="/item?id=${item.id}&mode=${mode}"><span class="code">${item.code}</span><b>${item.shortTitle}</b><span>›</span></a>`;
         }).join("");
       } catch (error) {
         console.error(error);

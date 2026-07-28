@@ -15,19 +15,19 @@
   </style>
 
 <style id="public-privacy-style">
-  html{visibility:hidden}
+  html{visibility:visible}
   img[src*="wuba-intelligence-logo"]{display:none!important}
   .sanitized-brand-name{display:inline-flex;align-items:center;min-height:38px;color:inherit;font-size:18px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
   .download-disabled{cursor:pointer!important}
 </style>
-<script>setTimeout(function(){document.documentElement.style.visibility="visible"},1500)</script>
+
 <script defer src="/sanitize.js"></script>
 </head>
 <body>
   <header class="site-header">
     <a class="site-brand" href="/"><span class="brand-logo-panel"><span class="sanitized-brand-name">具身智能</span></span><span><strong>具身智能模块化3D素材工作台</strong><small>测试外场实拍重建目录</small></span></a>
     <nav class="site-nav" aria-label="主要页面">
-      <a href="/studio.html">工作台</a><a href="/models.html">室内设备</a><a href="/outfield.html" aria-current="page">测试外场</a><a href="/planner.html">自由排布</a><a href="/downloads.html">下载中心</a>
+      <a href="/studio">工作台</a><a href="/models">室内设备</a><a href="/outfield" aria-current="page">测试外场</a><a href="/planner">自由排布</a><a href="/downloads">下载中心</a>
     </nav>
   </header>
 
@@ -37,7 +37,7 @@
         <p class="eyebrow">OUTFIELD MODULAR ASSETS</p>
         <h1 id="page-title">测试外场24个独立模块</h1>
         <p class="lead">将10组现场多角度照片中的实际设施拆成24个可重复使用的单体，包括坡道楼梯、平衡跨越、工业管线、自然地形、湿滑路面和迷彩通道。每个模型均可独立查看、下载、打印和拖入沙盘。</p>
-        <div class="intro-actions"><a class="button primary" href="/planner.html">用模块排方案</a><a class="button accent" href="/downloads.html#outfield-title">选择三格式打印包</a></div>
+        <div class="intro-actions"><a class="button primary" href="/planner">用模块排方案</a><a class="button accent" href="/downloads#outfield-title">选择三格式打印包</a></div>
         <div class="stats"><div class="stat"><b>24</b><span>实拍重建模块</span></div><div class="stat"><b>219</b><span>现场参考照片</span></div><div class="stat"><b>1:50</b><span>原始打印比例</span></div><div class="stat"><b>STL / STP / 3MF</b><span>逐件打印文件</span></div></div>
       </div>
       <figure class="overview-media"><img src="/images/outfield/photo/OF10.webp" alt="高架木质陡坡训练塔现场实拍" fetchpriority="high" onerror="this.onerror=null;this.src='/images/outfield/photo/OF13.webp'"><figcaption>现场多角度照片参考 · 名称按实际结构与用途整理</figcaption></figure>
@@ -50,7 +50,7 @@
       <div id="catalog-grid" class="catalog-grid" aria-live="polite"><p class="empty">正在读取外场模块…</p></div>
     </section>
 
-    <aside class="download-banner"><div><h2>可打印三格式包</h2><p>24个外场模块均可独立下载，单个ZIP同时包含STL、STP、3MF、打印说明与STP回读校验记录。</p></div><a class="button accent" href="/downloads.html#outfield-title">选择模型下载</a></aside>
+    <aside class="download-banner"><div><h2>可打印三格式包</h2><p>24个外场模块均可独立下载，单个ZIP同时包含STL、STP、3MF、打印说明与STP回读校验记录。</p></div><a class="button accent" href="/downloads#outfield-title">选择模型下载</a></aside>
   </main>
   <footer>具身智能 · 测试外场模块化3D素材库</footer>
 
@@ -77,7 +77,7 @@
         <div class="asset-media"><img src="${esc(item.referenceImage)}" alt="${esc(item.title)}现场实拍参考" ${index < 3 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async" onerror="this.onerror=null;this.src='/images/outfield/photo/OF01.webp'"><span class="asset-code">${esc(item.code)}</span><span class="asset-source">实拍 · ${esc(item.photoCount)}张</span></div>
         <div class="asset-body"><div class="asset-title"><h3>${esc(item.title)}</h3><span>${esc(item.category)}</span></div><p class="asset-detail">${esc(item.detail)}</p>
         <div class="asset-meta"><span>${esc(item.scale)}</span><span>${size(item.dimensionsMm)}</span><span>${esc(item.method)}</span></div>
-        <div class="asset-actions"><a class="button primary" href="/item.html?id=${encodeURIComponent(item.id)}&mode=color">查看模型</a><a class="button" href="${item.printPackageFile || `/downloads.html#model-${encodeURIComponent(item.id)}`}" ${item.printPackageFile ? "download" : ""}>STL＋STP＋3MF</a><a class="button" href="${item.stepPackageFile || `/downloads.html#model-${encodeURIComponent(item.id)}`}" ${item.stepPackageFile ? "download" : ""}>设施STP</a></div></div>
+        <div class="asset-actions"><a class="button primary" href="/item?id=${encodeURIComponent(item.id)}&mode=color">查看模型</a><a class="button" href="${item.printPackageFile || `/downloads#model-${encodeURIComponent(item.id)}`}" ${item.printPackageFile ? "download" : ""}>STL＋STP＋3MF</a><a class="button" href="${item.stepPackageFile || `/downloads#model-${encodeURIComponent(item.id)}`}" ${item.stepPackageFile ? "download" : ""}>设施STP</a></div></div>
       </article>`).join("") : '<p class="empty">没有找到符合条件的模块。</p>';
     }
 

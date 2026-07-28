@@ -208,18 +208,18 @@
   </style>
 
 <style id="public-privacy-style">
-  html{visibility:hidden}
+  html{visibility:visible}
   img[src*="wuba-intelligence-logo"]{display:none!important}
   .sanitized-brand-name{display:inline-flex;align-items:center;min-height:38px;color:inherit;font-size:18px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
   .download-disabled{cursor:pointer!important}
 </style>
-<script>setTimeout(function(){document.documentElement.style.visibility="visible"},1500)</script>
+
 <script defer src="/sanitize.js"></script>
 </head>
 <body>
   <header>
     <div class="heading">
-      <a class="back" id="back-link" href="/models.html" aria-label="返回模型目录" title="返回模型目录">←</a>
+      <a class="back" id="back-link" href="/models" aria-label="返回模型目录" title="返回模型目录">←</a>
       <div class="heading-copy">
         <h1 id="model-title">正在读取模型…</h1>
         <div class="subtitle"><span class="scale" id="model-scale">—</span> · 独立查看 · 独立打印 · 自由组装</div>
@@ -275,8 +275,8 @@
         <p class="plain-note" id="model-note"><b>展示版本：</b>彩色版用于模型识别与方案展示；单色版用于预览常见单色耗材的成型效果。两种版本采用相同尺寸与主体结构。</p>
       </section>
       <section class="side-section links">
-        <a class="primary" id="catalog-link" href="/models.html">返回目录</a>
-        <a id="planner-link" href="/planner.html">自由排布</a>
+        <a class="primary" id="catalog-link" href="/models">返回目录</a>
+        <a id="planner-link" href="/planner">自由排布</a>
         <a id="download-stl" href="#">下载STL＋STP＋3MF</a>
         <a id="download-3mf" href="#" download>下载整机STP</a>
         <a id="download-glb" href="#" download>下载彩色GLB</a>
@@ -370,14 +370,14 @@
       document.getElementById("fallback-preview").classList.add("is-reference");
       const catalogLink = document.getElementById("catalog-link");
       const backLink = document.getElementById("back-link");
-      catalogLink.href = backLink.href = item.isOutfield ? "/outfield.html" : "/models.html";
+      catalogLink.href = backLink.href = item.isOutfield ? "/outfield" : "/models";
       catalogLink.textContent = item.isOutfield ? "外场目录" : "设备目录";
       const plannerLink = document.getElementById("planner-link");
       plannerLink.hidden = !(item.isOutfield || item.id === "mclab");
-      plannerLink.href = item.id === "mclab" ? "/planner.html?template=wrc-motion-capture-lab" : "/planner.html";
+      plannerLink.href = item.id === "mclab" ? "/planner?template=wrc-motion-capture-lab" : "/planner";
       plannerLink.textContent = item.id === "mclab" ? "调用动捕实验室模板" : "自由排布";
       const stlLink = document.getElementById("download-stl");
-      stlLink.href = item.printPackageFile || `/downloads.html#model-${encodeURIComponent(item.code || item.id)}`;
+      stlLink.href = item.printPackageFile || `/downloads#model-${encodeURIComponent(item.code || item.id)}`;
       stlLink.toggleAttribute("download", Boolean(item.printPackageFile));
       stlLink.hidden = false;
       const threeMfLink = document.getElementById("download-3mf");
@@ -387,7 +387,7 @@
       glbLink.href = item.glbFile || item.file || "#";
       glbLink.hidden = !(item.glbFile || item.file);
       const packageLink = document.getElementById("download-package");
-      packageLink.href = `/downloads.html#model-${encodeURIComponent(item.code || item.id)}`;
+      packageLink.href = `/downloads#model-${encodeURIComponent(item.code || item.id)}`;
       packageLink.textContent = "查看全部分件打印包";
       packageLink.hidden = !(item.printPackageFiles?.length > 1);
       packageLink.removeAttribute("download");

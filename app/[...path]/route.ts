@@ -2,6 +2,9 @@ const SOURCE_ORIGIN =
   process.env.PUBLIC_ASSET_ORIGIN ??
   "https://sandtable-3d-starter.jihongwei1217.chatgpt.site";
 const BLOCKED_DOWNLOAD = /\.(?:zip|stl|3mf|stp|step)(?:$|[?#])/i;
+const HASHED_ASSET = /^\/assets\/.+-[A-Za-z0-9_-]{6,}\.(?:css|js|woff2?)$/i;
+const MEDIA_ASSET =
+  /^\/(?:images|models|workbench|outfield)\/.+\.(?:avif|gif|glb|gltf|jpe?g|json|png|svg|webp|woff2?)$/i;
 
 async function proxy(request: Request) {
   const incoming = new URL(request.url);
@@ -31,7 +34,15 @@ async function proxy(request: Request) {
   responseHeaders.delete("content-encoding");
   responseHeaders.delete("content-length");
   responseHeaders.delete("set-cookie");
-  responseHeaders.set("cache-control", "public, max-age=3600");
+  responseHeaders.set(
+    "cache-control",
+    HASHED_ASSET.test(incoming.pathname)
+      ? "public, max-age=31536000, immutable"
+      : MEDIA_ASSET.test(incoming.pathname)
+        ? "public, max-age=86400, stale-while-revalidate=604800"
+        : "public, max-age=3600, stale-while-revalidate=86400",
+  );
+  responseHeaders.set("vary", "Accept-Encoding");
 
   return new Response(request.method === "HEAD" ? null : sourceResponse.body, {
     status: sourceResponse.status,
