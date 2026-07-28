@@ -2,7 +2,19 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-type AssetKind = "robot" | "bench" | "screen" | "tree" | "operator";
+type AssetKind =
+  | "robot"
+  | "quadruped"
+  | "bench"
+  | "screen"
+  | "tree"
+  | "operator"
+  | "chamber"
+  | "dynamometer"
+  | "impact"
+  | "vibration"
+  | "rig"
+  | "vehicle";
 type SceneMode = "indoor" | "outdoor" | "mixed";
 type ViewMode = "perspective" | "top";
 
@@ -20,33 +32,69 @@ const assetInfo: Record<
   { name: string; icon: string; color: string; className: string }
 > = {
   robot: { name: "机器人代理", icon: "R", color: "#ff6838", className: "robot" },
+  quadruped: { name: "Q20 四足机器人", icon: "Q", color: "#f15d36", className: "robot" },
   bench: { name: "测试工作台", icon: "B", color: "#22c7a9", className: "bench" },
   screen: { name: "信息看板", icon: "S", color: "#5d7cff", className: "screen" },
   tree: { name: "景观绿植", icon: "T", color: "#79c267", className: "tree" },
   operator: { name: "操作人员", icon: "P", color: "#e7b64d", className: "operator" },
+  chamber: { name: "步入式温箱", icon: "C", color: "#49728f", className: "bench" },
+  dynamometer: { name: "测功机机台", icon: "D", color: "#1d9e8a", className: "bench" },
+  impact: { name: "冲击试验台", icon: "I", color: "#9d7543", className: "bench" },
+  vibration: { name: "振动试验台", icon: "V", color: "#337e78", className: "bench" },
+  rig: { name: "机器人操作线架", icon: "L", color: "#526de5", className: "screen" },
+  vehicle: { name: "车辆装车模块", icon: "A", color: "#bc604d", className: "bench" },
 };
 
 const templates: Record<SceneMode, SceneItem[]> = {
   indoor: [
-    { id: 1, kind: "bench", x: 28, y: 32, rotation: 0, color: "#22c7a9" },
-    { id: 2, kind: "robot", x: 52, y: 50, rotation: -12, color: "#ff6838" },
-    { id: 3, kind: "screen", x: 70, y: 27, rotation: 0, color: "#5d7cff" },
-    { id: 4, kind: "operator", x: 70, y: 66, rotation: 14, color: "#e7b64d" },
+    { id: 1, kind: "chamber", x: 23, y: 25, rotation: 0, color: "#49728f" },
+    { id: 2, kind: "dynamometer", x: 49, y: 26, rotation: 0, color: "#1d9e8a" },
+    { id: 3, kind: "impact", x: 73, y: 26, rotation: 0, color: "#9d7543" },
+    { id: 4, kind: "vibration", x: 27, y: 66, rotation: 0, color: "#337e78" },
+    { id: 5, kind: "rig", x: 51, y: 62, rotation: -8, color: "#526de5" },
+    { id: 6, kind: "robot", x: 70, y: 63, rotation: 14, color: "#ff6838" },
+    { id: 7, kind: "operator", x: 82, y: 72, rotation: 14, color: "#e7b64d" },
   ],
   outdoor: [
     { id: 1, kind: "tree", x: 23, y: 24, rotation: 0, color: "#79c267" },
     { id: 2, kind: "tree", x: 76, y: 23, rotation: 0, color: "#79c267" },
-    { id: 3, kind: "robot", x: 49, y: 48, rotation: 12, color: "#ff6838" },
-    { id: 4, kind: "operator", x: 65, y: 70, rotation: 0, color: "#e7b64d" },
+    { id: 3, kind: "quadruped", x: 49, y: 48, rotation: 12, color: "#f15d36" },
+    { id: 4, kind: "vehicle", x: 70, y: 60, rotation: -8, color: "#bc604d" },
+    { id: 5, kind: "operator", x: 32, y: 70, rotation: 0, color: "#e7b64d" },
+    { id: 6, kind: "screen", x: 77, y: 30, rotation: 0, color: "#5d7cff" },
   ],
   mixed: [
-    { id: 1, kind: "bench", x: 28, y: 35, rotation: 0, color: "#22c7a9" },
-    { id: 2, kind: "screen", x: 67, y: 27, rotation: 0, color: "#5d7cff" },
-    { id: 3, kind: "robot", x: 52, y: 53, rotation: -15, color: "#ff6838" },
-    { id: 4, kind: "tree", x: 78, y: 68, rotation: 0, color: "#79c267" },
-    { id: 5, kind: "operator", x: 28, y: 69, rotation: 12, color: "#e7b64d" },
+    { id: 1, kind: "chamber", x: 20, y: 27, rotation: 0, color: "#49728f" },
+    { id: 2, kind: "dynamometer", x: 42, y: 27, rotation: 0, color: "#1d9e8a" },
+    { id: 3, kind: "rig", x: 66, y: 26, rotation: 0, color: "#526de5" },
+    { id: 4, kind: "robot", x: 37, y: 57, rotation: -15, color: "#ff6838" },
+    { id: 5, kind: "quadruped", x: 58, y: 60, rotation: 12, color: "#f15d36" },
+    { id: 6, kind: "vehicle", x: 78, y: 62, rotation: -5, color: "#bc604d" },
+    { id: 7, kind: "tree", x: 84, y: 28, rotation: 0, color: "#79c267" },
+    { id: 8, kind: "operator", x: 20, y: 72, rotation: 12, color: "#e7b64d" },
   ],
 };
+
+const projectModules = [
+  ["01", "盐雾试验设备", "环境可靠性"],
+  ["02", "测功机机台", "动力性能"],
+  ["03", "测功机控制柜", "控制系统"],
+  ["04", "冲击试验台", "机械冲击"],
+  ["05", "振动试验台", "振动可靠性"],
+  ["06", "机器人操作线架", "任务训练"],
+  ["07A–C", "步入式大温箱", "三段式拼装"],
+  ["08", "车辆装车模块", "任务场景"],
+  ["09", "D12 人形机器人", "彩色 / 无色"],
+  ["10", "Q20 四足机器人", "彩色 / 无色"],
+];
+
+const deliveryFlow = [
+  ["01", "实拍与需求", "整理多角度照片、尺寸和场景任务"],
+  ["02", "数字建模", "建立机器人、设备和场景模块"],
+  ["03", "网页检视", "旋转、缩放、复位和单件核对"],
+  ["04", "沙盘排布", "室内、室外、混合与历史方案"],
+  ["05", "打印交付", "GLB、STL、STP、3MF 与装配说明"],
+];
 
 function cloneScene(mode: SceneMode) {
   return templates[mode].map((item) => ({ ...item }));
@@ -231,28 +279,127 @@ export default function Home() {
       <header className="topbar">
         <div className="brand">
           <span className="brand-mark"><i /><i /><i /></span>
-          <span>3D 沙盘实验室</span>
-          <span className="open-badge">OPEN TEMPLATE</span>
+          <span>具身智能中试平台</span>
+          <span className="open-badge">PORTFOLIO</span>
         </div>
+        <nav className="main-nav" aria-label="作品导航">
+          <a href="#overview">项目总览</a>
+          <a href="#evidence">建模成果</a>
+          <a href="#demo">沙盘工作台</a>
+          <a href="#delivery">交付流程</a>
+        </nav>
         <div className="top-actions">
-          <button className="ghost-btn" onClick={loadLocal}>打开布局</button>
-          <button className="primary-btn" onClick={saveLocal}>保存布局</button>
           <a className="github-btn" href="https://github.com/jihongwei1217-code/interactive-3d-sandtable-portfolio" target="_blank" rel="noreferrer">
-            GitHub 源码 ↗
+            查看源码 ↗
           </a>
         </div>
       </header>
 
-      <section className="hero-strip">
+      <section className="project-hero" id="overview">
+        <div className="project-hero-copy">
+          <span className="project-code">EMBODIED AI · DIGITAL SANDBOX · 01:25</span>
+          <h1>机器人中试平台<br /><em>数字化沙盘系统</em></h1>
+          <p>
+            面向真实中试基地的 AI 辅助建模与网页交付项目。把机器人、试验设备、室内外场景和
+            3D 打印文件，组织成一套可检视、可排布、可复用的数字工作台。
+          </p>
+          <div className="project-actions">
+            <a href="#demo" className="project-primary">立即操作 3D 沙盘 ↓</a>
+            <a href="#evidence">查看真实项目成果</a>
+          </div>
+          <div className="disclosure-line">
+            <span>公开边界</span>
+            <b>仅隐藏公司名称与品牌 Logo</b>
+            <small>模型、场景、功能与工作流保留</small>
+          </div>
+        </div>
+        <div className="project-hero-visual">
+          <img src="/project/d12-hero.webp" alt="D12 人形机器人数字模型效果" />
+          <div className="visual-tag tag-a"><span>01</span>D12 人形机器人</div>
+          <div className="visual-tag tag-b"><span>02</span>网页实时检视</div>
+          <div className="visual-tag tag-c"><span>03</span>打印分件交付</div>
+          <p>PHOTO-REFERENCED MODEL / ROUGH PROTOTYPE</p>
+        </div>
+        <div className="project-metrics">
+          <div><strong>41</strong><span>数字资产</span></div>
+          <div><strong>14</strong><span>沙盘模板</span></div>
+          <div><strong>80</strong><span>打印件</span></div>
+          <div><strong>5</strong><span>核心场景</span></div>
+        </div>
+      </section>
+
+      <section className="proof-section" id="evidence">
+        <div className="proof-heading">
+          <div>
+            <span className="section-kicker">01 / 建模证据</span>
+            <h2>从实拍参考，到可检视的粗略数字模型</h2>
+          </div>
+          <p>这不是通用概念页。建模过程使用正面、背面和双侧实拍持续校正轮廓、关节、外壳分件与材质关系。</p>
+        </div>
+        <div className="photo-proof">
+          {[
+            ["/project/d12-front.webp", "正面参考"],
+            ["/project/d12-left.webp", "左侧参考"],
+            ["/project/d12-back.webp", "背面参考"],
+            ["/project/d12-right.webp", "右侧参考"],
+          ].map(([src, label]) => (
+            <figure key={src}>
+              <img src={src} alt={`D12 人形机器人${label}`} />
+              <figcaption>{label}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <div className="module-panel">
+          <div className="module-intro">
+            <span className="section-kicker">02 / 独立模型库</span>
+            <h3>10类设备，12个可独立打印小物件</h3>
+            <p>大温箱拆分为 07A / 07B / 07C 三段；机器人与设备均按彩色检视、无色打印两条路径管理。</p>
+          </div>
+          <div className="module-grid">
+            {projectModules.map(([code, name, use]) => (
+              <article key={code}>
+                <span>{code}</span>
+                <div><strong>{name}</strong><small>{use}</small></div>
+                <b>↗</b>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="scene-proof">
+        <div className="scene-image">
+          <img src="/project/pilot-lab.webp" alt="机器人中试验证场景效果" />
+          <span>AI TRAINING CENTER / PILOT LAB</span>
+        </div>
+        <div className="scene-copy">
+          <span className="section-kicker">03 / 场景体系</span>
+          <h2>不是一张效果图，而是五套可组合场景</h2>
+          <p>整体沙盘由四个内场中心与一个外场组成，内外场面积约 2:1。设备、绿化、人员、机器人和车辆均作为可调用模块进入排布系统。</p>
+          <div className="scene-list">
+            {[
+              ["01", "AI 训练中心", "分装、装配、装车与动捕采集"],
+              ["02", "产品试制中心", "结构、电控与小批样机试制"],
+              ["03", "整机性能测试区", "振动、冲击、温湿与动力测试"],
+              ["04", "产品发布中心", "产品展示、讲解与方案演示"],
+              ["05", "室外综合场", "复杂地形、巡检与任务验证"],
+            ].map(([code, name, detail]) => (
+              <div key={code}><span>{code}</span><strong>{name}</strong><small>{detail}</small></div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="hero-strip" id="demo">
         <div>
-          <span className="eyebrow">可交互 · 可复制 · 已脱敏</span>
-          <h1>把想法拖进场景，<em>搭出你的系统。</em></h1>
-          <p>这是作品的公开演示版。选择模块、拖动布局、切换视角，并导出一份属于你的沙盘配置。</p>
+          <span className="eyebrow">04 / 可交互工作台</span>
+          <h2>现在，亲手排布这套<em>中试沙盘。</em></h2>
+          <p>添加真实项目中的设备模块，拖动布局、切换视角，并导出一份属于你的沙盘配置。</p>
         </div>
         <div className="hero-meta">
-          <div><strong>{items.length}</strong><span>场景物体</span></div>
-          <div><strong>100%</strong><span>浏览器运行</span></div>
-          <div><strong>MIT</strong><span>模板许可</span></div>
+          <button onClick={loadLocal}><strong>打开</strong><span>本地布局</span></button>
+          <button onClick={saveLocal}><strong>保存</strong><span>当前布局</span></button>
+          <div><strong>{items.length}</strong><span>当前物体</span></div>
         </div>
       </section>
 
@@ -370,8 +517,41 @@ export default function Home() {
         </aside>
       </section>
 
+      <section className="delivery-section" id="delivery">
+        <div className="proof-heading">
+          <div>
+            <span className="section-kicker">05 / 项目交付</span>
+            <h2>把一次建模任务，变成完整产品工作流</h2>
+          </div>
+          <p>我的价值不只在建模本身，而在于把需求、数字资产、网页交互、场景方案和打印交付串成一套能被团队使用的系统。</p>
+        </div>
+        <div className="delivery-flow">
+          {deliveryFlow.map(([code, title, detail]) => (
+            <article key={code}>
+              <span>{code}</span>
+              <strong>{title}</strong>
+              <p>{detail}</p>
+            </article>
+          ))}
+        </div>
+        <div className="deliverable-grid">
+          <div>
+            <span>WEB</span><strong>浏览器工作台</strong>
+            <p>单件检视、3D沙盘、模型库、历史方案、文件下载。</p>
+          </div>
+          <div>
+            <span>3D</span><strong>多格式数字资产</strong>
+            <p>GLB网页预览，STL / STP / 3MF 打印与工程交付思路。</p>
+          </div>
+          <div>
+            <span>PM</span><strong>产品与协调</strong>
+            <p>需求拆解、交互定义、版本验收、反馈闭环与部署协调。</p>
+          </div>
+        </div>
+      </section>
+
       <footer>
-        <p><strong>3D Sandtable Starter</strong> · 公开演示模板，不包含企业私有模型与数据</p>
+        <p><strong>机器人中试平台数字沙盘作品集</strong> · 仅公司名称与品牌标识已匿名化</p>
         <div>
           <a href="https://github.com/jihongwei1217-code/interactive-3d-sandtable-portfolio/fork" target="_blank" rel="noreferrer">Fork 一份</a>
           <a href="https://github.com/jihongwei1217-code/interactive-3d-sandtable-portfolio/archive/refs/heads/main.zip">下载源码</a>
