@@ -7,6 +7,8 @@ robotics pilot-platform sandtable project.
 
 - the company name;
 - the company logo and direct brand identifiers;
+- humanoid and quadruped robot product/model names;
+- real dimensions, scale, and model-accuracy values, replaced with `XXX`;
 - account credentials, deployment secrets, and non-public personal data.
 
 ## Publicly Included
@@ -14,11 +16,12 @@ robotics pilot-platform sandtable project.
 - rough, display-grade model results and photo references;
 - equipment names and project structure;
 - scene architecture and layout logic;
-- browser interactions and source code for the public demonstration;
+- browser interactions for the public demonstration;
+- visual-only download, fork, and export controls that do not deliver files;
 - project scale, workflow, product decisions, iteration history, and delivery methods;
 - GLB, STL, STP, and 3MF format planning and related documentation.
 
-The models shown here are portfolio-grade approximations. They are not
+The models shown here use anonymized `XXX` dimensions and accuracy values and are portfolio-grade approximations. They are not
 production CAD, reverse-engineering data, or manufacturing specifications.
 
 ## Authorship
