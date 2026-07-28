@@ -31,8 +31,8 @@ const assetInfo: Record<
   AssetKind,
   { name: string; icon: string; color: string; className: string }
 > = {
-  robot: { name: "机器人代理", icon: "R", color: "#ff6838", className: "robot" },
-  quadruped: { name: "Q20 四足机器人", icon: "Q", color: "#f15d36", className: "robot" },
+  robot: { name: "人形机器人（型号隐藏）", icon: "R", color: "#ff6838", className: "robot" },
+  quadruped: { name: "四足机器人（型号隐藏）", icon: "Q", color: "#f15d36", className: "robot" },
   bench: { name: "测试工作台", icon: "B", color: "#22c7a9", className: "bench" },
   screen: { name: "信息看板", icon: "S", color: "#5d7cff", className: "screen" },
   tree: { name: "景观绿植", icon: "T", color: "#79c267", className: "tree" },
@@ -84,12 +84,12 @@ const projectModules = [
   ["06", "机器人操作线架", "任务训练"],
   ["07A–C", "步入式大温箱", "三段式拼装"],
   ["08", "车辆装车模块", "任务场景"],
-  ["09", "D12 人形机器人", "彩色 / 无色"],
-  ["10", "Q20 四足机器人", "彩色 / 无色"],
+  ["09", "人形机器人（型号隐藏）", "彩色 / 无色"],
+  ["10", "四足机器人（型号隐藏）", "彩色 / 无色"],
 ];
 
 const deliveryFlow = [
-  ["01", "实拍与需求", "整理多角度照片、尺寸和场景任务"],
+  ["01", "实拍与需求", "整理多角度照片、XXX 尺寸参数和场景任务"],
   ["02", "数字建模", "建立机器人、设备和场景模块"],
   ["03", "网页检视", "旋转、缩放、复位和单件核对"],
   ["04", "沙盘排布", "室内、室外、混合与历史方案"],
@@ -211,17 +211,8 @@ export default function Home() {
     }
   };
 
-  const exportScene = () => {
-    const blob = new Blob([JSON.stringify({ version: 1, mode, items }, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "sandtable-layout.json";
-    link.click();
-    URL.revokeObjectURL(url);
-    setToast("布局文件已导出");
+  const showRestrictedDownload = () => {
+    setToast("公开展示版暂不提供文件下载");
   };
 
   const importScene = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -289,7 +280,7 @@ export default function Home() {
           <a href="#delivery">交付流程</a>
         </nav>
         <div className="top-actions">
-          <a className="github-btn" href="https://github.com/jihongwei1217-code/interactive-3d-sandtable-portfolio" target="_blank" rel="noreferrer">
+          <a className="github-btn" role="button" onClick={showRestrictedDownload}>
             查看源码 ↗
           </a>
         </div>
@@ -297,7 +288,7 @@ export default function Home() {
 
       <section className="project-hero" id="overview">
         <div className="project-hero-copy">
-          <span className="project-code">EMBODIED AI · DIGITAL SANDBOX · 01:25</span>
+          <span className="project-code">EMBODIED AI · DIGITAL SANDBOX · 1:XXX</span>
           <h1>机器人中试平台<br /><em>数字化沙盘系统</em></h1>
           <p>
             面向真实中试基地的 AI 辅助建模与网页交付项目。把机器人、试验设备、室内外场景和
@@ -314,8 +305,8 @@ export default function Home() {
           </div>
         </div>
         <div className="project-hero-visual">
-          <img src="/project/d12-hero.webp" alt="D12 人形机器人数字模型效果" />
-          <div className="visual-tag tag-a"><span>01</span>D12 人形机器人</div>
+          <img src="/project/humanoid-hero.webp" alt="人形机器人数字模型效果" />
+          <div className="visual-tag tag-a"><span>01</span>人形机器人（型号隐藏）</div>
           <div className="visual-tag tag-b"><span>02</span>网页实时检视</div>
           <div className="visual-tag tag-c"><span>03</span>打印分件交付</div>
           <p>PHOTO-REFERENCED MODEL / ROUGH PROTOTYPE</p>
@@ -338,13 +329,13 @@ export default function Home() {
         </div>
         <div className="photo-proof">
           {[
-            ["/project/d12-front.webp", "正面参考"],
-            ["/project/d12-left.webp", "左侧参考"],
-            ["/project/d12-back.webp", "背面参考"],
-            ["/project/d12-right.webp", "右侧参考"],
+            ["/project/humanoid-front.webp", "正面参考"],
+            ["/project/humanoid-left.webp", "左侧参考"],
+            ["/project/humanoid-back.webp", "背面参考"],
+            ["/project/humanoid-right.webp", "右侧参考"],
           ].map(([src, label]) => (
             <figure key={src}>
-              <img src={src} alt={`D12 人形机器人${label}`} />
+              <img src={src} alt={`人形机器人${label}`} />
               <figcaption>{label}</figcaption>
             </figure>
           ))}
@@ -353,7 +344,7 @@ export default function Home() {
           <div className="module-intro">
             <span className="section-kicker">02 / 独立模型库</span>
             <h3>10类设备，12个可独立打印小物件</h3>
-            <p>大温箱拆分为 07A / 07B / 07C 三段；机器人与设备均按彩色检视、无色打印两条路径管理。</p>
+            <p>大温箱拆分为 07A / 07B / 07C 三段；尺寸为 XXX × XXX × XXX mm，展示精度为 XXX；机器人与设备均按彩色检视、无色打印两条路径管理。</p>
           </div>
           <div className="module-grid">
             {projectModules.map(([code, name, use]) => (
@@ -394,7 +385,7 @@ export default function Home() {
         <div>
           <span className="eyebrow">04 / 可交互工作台</span>
           <h2>现在，亲手排布这套<em>中试沙盘。</em></h2>
-          <p>添加真实项目中的设备模块，拖动布局、切换视角，并导出一份属于你的沙盘配置。</p>
+          <p>添加真实项目中的设备模块，拖动布局、切换视角，并体验完整的沙盘配置流程。</p>
         </div>
         <div className="hero-meta">
           <button onClick={loadLocal}><strong>打开</strong><span>本地布局</span></button>
@@ -507,9 +498,9 @@ export default function Home() {
           )}
           <div className="io-box">
             <h3>分享这份布局</h3>
-            <p>导出 JSON，别人导入后即可继续编辑。</p>
+            <p>导入与导出按钮用于展示完整产品流程，公开版不提供文件下载。</p>
             <div>
-              <button onClick={exportScene}>导出</button>
+              <button onClick={showRestrictedDownload}>导出</button>
               <button onClick={() => fileRef.current?.click()}>导入</button>
             </div>
             <input ref={fileRef} hidden type="file" accept=".json,application/json" onChange={importScene} />
@@ -537,7 +528,7 @@ export default function Home() {
         <div className="deliverable-grid">
           <div>
             <span>WEB</span><strong>浏览器工作台</strong>
-            <p>单件检视、3D沙盘、模型库、历史方案、文件下载。</p>
+            <p>单件检视、3D沙盘、模型库、历史方案、文件下载界面。</p>
           </div>
           <div>
             <span>3D</span><strong>多格式数字资产</strong>
@@ -551,10 +542,10 @@ export default function Home() {
       </section>
 
       <footer>
-        <p><strong>机器人中试平台数字沙盘作品集</strong> · 仅公司名称与品牌标识已匿名化</p>
+        <p><strong>机器人中试平台数字沙盘作品集</strong> · 公司品牌及机器人型号已匿名化</p>
         <div>
-          <a href="https://github.com/jihongwei1217-code/interactive-3d-sandtable-portfolio/fork" target="_blank" rel="noreferrer">Fork 一份</a>
-          <a href="https://github.com/jihongwei1217-code/interactive-3d-sandtable-portfolio/archive/refs/heads/main.zip">下载源码</a>
+          <a role="button" onClick={showRestrictedDownload}>Fork 一份</a>
+          <a role="button" onClick={showRestrictedDownload}>下载源码</a>
         </div>
       </footer>
       {toast && <div className="toast"><span>✓</span>{toast}</div>}
