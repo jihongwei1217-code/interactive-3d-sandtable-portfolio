@@ -1,5 +1,10 @@
 .DS_Store
 Thumbs.db
+node_modules/
+.next/
+out/
+.vercel/
+npm-debug.log*
 *.stl
 *.stp
 *.step
