@@ -1,8 +1,8 @@
 # 机器人中试平台数字沙盘｜3D 建模作品集
 
-> AI 辅助 3D 建模、交互式沙盘、模型检视与打印交付的一体化项目。公开版仅隐藏公司名称与品牌 Logo，模型、场景、功能、项目数据和工作流程均保留。
+> AI 辅助 3D 建模、交互式沙盘、模型检视与打印交付的一体化项目。公开版隐藏公司品牌、机器人型号、真实尺寸与精度，并关闭文件下载；模型、场景、功能和工作流程保留。
 
-[🚀 在线观赏与操作](https://sandtable-3d-starter.jihongwei1217.chatgpt.site) · [🍴 复制一份（Fork）](https://github.com/jihongwei1217-code/interactive-3d-sandtable-portfolio/fork) · [⬇ 下载全部源码](https://github.com/jihongwei1217-code/interactive-3d-sandtable-portfolio/archive/refs/heads/main.zip) · [📘 中文项目案例](CASE_STUDY_CN.md)
+[🚀 在线观赏与操作](https://sandtable-3d-starter.jihongwei1217.chatgpt.site) · 🍴 复制按钮（仅展示） · ⬇ 下载按钮（仅展示） · [📘 中文项目案例](CASE_STUDY_CN.md)
 
 ![Project overview](assets/project-overview.svg)
 
@@ -16,38 +16,18 @@
 
 ## 公开版保留了什么
 
-- D12 人形机器人、Q20 四足机器人与多角度实拍参考；
+- 人形机器人、四足机器人与多角度实拍参考（具体型号隐藏）；
 - 盐雾设备、测功机、控制柜、冲击台、振动台、操作线架、步入式温箱和车辆模块；
 - 点击添加、拖动、选中、删除、撤回；
 - 室内、室外、混合场景模板；
 - 3D / 2D 俯视切换；
 - 本地保存与恢复；
-- JSON 布局导入和导出；
+- JSON 布局导入和导出界面（公开版不提供文件下载）；
 - 从实拍、建模、网页检视、沙盘排布到打印交付的完整流程。
 
-## 快速复制
+## 下载与复制说明
 
-### 方法 A：Fork
-
-点击上方 **“复制一份（Fork）”**，GitHub 会在你的账号中生成完整副本。
-
-### 方法 B：下载 ZIP
-
-下载并解压源码后运行：
-
-```bash
-npm install
-npm run dev
-```
-
-### 方法 C：Git 克隆
-
-```bash
-git clone https://github.com/jihongwei1217-code/interactive-3d-sandtable-portfolio.git
-cd interactive-3d-sandtable-portfolio
-npm install
-npm run dev
-```
+网页保留 Fork、下载源码和导出布局按钮，用于展示完整产品流程；公开展示版点击后只会提示，不会触发真实文件下载。
 
 ## 代码入口
 
@@ -61,7 +41,7 @@ npm run dev
 我在项目中承担产品负责人和 AI 辅助原型协调角色，主要负责：
 
 - 将现场照片、使用需求和反馈转化为产品需求；
-- 设计模型目录、场景规划、文件下载和交付导航；
+- 设计模型目录、场景规划、文件下载界面和交付导航；
 - 定义拖拽、删除、撤回、视角恢复和历史方案等交互；
 - 协调网页预览、可打印资产、装配文档和部署；
 - 持续审核模型质量、场景效果、物理结构和使用体验；
@@ -73,10 +53,13 @@ npm run dev
 
 - 公司名称替换为“某机器人科技公司”或中性项目名称；
 - 公司 Logo 与品牌标识不展示；
+- 人形机器人与四足机器人的具体型号不展示；
+- 真实尺寸、比例与模型精度统一以 XXX 表示；
+- 下载与复制按钮仅作交互展示，不连接真实文件；
 - 账号、密钥及非公开个人信息不上传。
 
 粗略模型、设备名称、项目结构、场景体系、交互功能、实拍参考和交付方法均可公开。代码使用 [MIT License](LICENSE)。
 
 ---
 
-如果你是黑客松评审：建议先打开 **在线观赏与操作**，实际添加设备并切换 2D / 3D 视角，再查看源码和项目案例。
+如果你是黑客松评审：建议先打开 **在线观赏与操作**，实际添加设备并切换 2D / 3D 视角，再查看项目案例。
