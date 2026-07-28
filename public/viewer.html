@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="浙江省人形机器人中试平台1:25模块化展示沙盘，可切换实物配色和单色打印预览。">
+  <title>中试平台1:25互动3D沙盘｜具身智能</title>
+  <style>
+    :root {
+      font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+      color: #1b252a;
+      background: #e7ecee;
+      --ink: #1b252a;
+      --muted: #65737a;
+      --line: #cfd8da;
+      --brand: #173a47;
+      --accent: #e8791c;
+      --green: #28735c;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-width: 320px; height: 100%; margin: 0; overflow: hidden; }
+    body { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible { outline: 3px solid rgb(232 121 28 / 34%); outline-offset: 2px; }
+    header {
+      z-index: 10;
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto auto;
+      align-items: center;
+      gap: 13px;
+      min-height: 68px;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgb(255 255 255 / 97%);
+      box-shadow: 0 4px 18px rgb(24 44 52 / 8%);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .logo { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 auto; border-radius: 7px; color: #fff; background: var(--brand); font-size: 13px; font-weight: 900; }
+    .brand-copy { min-width: 0; }
+    h1 { overflow: hidden; margin: 0; font-size: clamp(15px, 2vw, 20px); text-overflow: ellipsis; white-space: nowrap; }
+    .subtitle { margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .subtitle b { color: var(--green); }
+    .mode-switch { display: inline-flex; padding: 3px; border: 1px solid #c8d1d4; border-radius: 8px; background: #e9eeee; }
+    .mode-switch button { min-width: 104px; border: 0; border-radius: 5px; padding: 8px 10px; color: #53636a; background: transparent; font: inherit; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .mode-switch button.is-active { color: #fff; background: var(--brand); box-shadow: 0 2px 7px rgb(22 47 57 / 18%); }
+    .toolbar { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 5px; }
+    .tool, .catalog-link { min-height: 36px; border: 1px solid #c5cfd2; border-radius: 6px; padding: 8px 9px; color: #2c414a; background: #fff; font: inherit; font-size: 10px; font-weight: 700; text-decoration: none; cursor: pointer; }
+    .tool:hover, .tool.is-active, .catalog-link:hover { border-color: #79919a; background: #eef3f4; }
+    main { display: grid; grid-template-columns: minmax(0, 1fr) 300px; min-height: 0; }
+    .viewer-panel { position: relative; min-width: 0; min-height: 0; background: #e9eef0; }
+    #viewer { position: absolute; inset: 0; overflow: hidden; touch-action: none; }
+    #viewer canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+    #fallback-preview { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; color: #61737b; background: #e9eef0; text-align: center; }
+    #fallback-preview[hidden] { display: none; }
+    .loader { width: 92px; height: 63px; margin: 0 auto 17px; border: 2px solid #74868d; border-top: 9px solid var(--accent); border-radius: 7px; animation: lift 1.1s ease-in-out infinite alternate; }
+    @keyframes lift { to { transform: translateY(-7px); opacity: .55; } }
+    #status { position: absolute; left: 50%; bottom: 14px; z-index: 4; width: max-content; max-width: calc(100% - 24px); transform: translateX(-50%); padding: 8px 13px; border: 1px solid rgb(91 109 118 / 24%); border-radius: 999px; color: #405158; background: rgb(255 255 255 / 92%); box-shadow: 0 7px 22px rgb(34 50 58 / 12%); font-size: 10px; text-align: center; backdrop-filter: blur(8px); pointer-events: none; }
+    #status[data-kind="ok"] { color: #1c654d; border-color: rgb(37 116 92 / 26%); }
+    #status[data-kind="error"] { color: #a52d31; border-color: rgb(165 45 49 / 30%); }
+    .hint { position: absolute; top: 12px; left: 12px; z-index: 2; max-width: 250px; padding: 9px 11px; border: 1px solid rgb(80 99 107 / 17%); border-radius: 6px; color: #506168; background: rgb(255 255 255 / 84%); font-size: 9px; line-height: 1.65; backdrop-filter: blur(8px); pointer-events: none; }
+    aside { min-height: 0; overflow: auto; border-left: 1px solid var(--line); background: #f8faf9; }
+    .side-section { padding: 15px; border-bottom: 1px solid #dbe2e4; }
+    .side-section h2 { margin: 0 0 6px; font-size: 16px; }
+    .side-section p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+    .mode-note { margin-top: 9px !important; padding: 8px 9px; border-left: 3px solid var(--accent); background: #fff; color: #40545c !important; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 11px; }
+    .stat { padding: 8px; border: 1px solid var(--line); border-radius: 5px; background: #fff; }
+    .stat b { display: block; color: var(--brand); font-size: 13px; }
+    .stat span { display: block; margin-top: 2px; color: var(--muted); font-size: 8px; }
+    .equipment-list { display: grid; gap: 5px; }
+    .equipment { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-height: 38px; padding: 6px; border: 1px solid #d7dfe1; border-radius: 5px; color: var(--ink); background: #fff; text-decoration: none; }
+    .equipment:hover { border-color: #8ca1a8; }
+    .code { display: grid; place-items: center; width: 28px; height: 26px; border-radius: 4px; color: #fff; background: var(--brand); font-size: 8px; font-weight: 900; }
+    .equipment b { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+    .equipment span:last-child { color: #78868b; font-size: 11px; }
+    .legend { display: flex; gap: 12px; margin-top: 10px; color: #68767b; font-size: 9px; }
+    .legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .dot { width: 9px; height: 9px; border-radius: 2px; background: var(--accent); }
+    .dot.gray { background: #aeb4b5; }
+    @media (max-width: 1050px) {
+      header { grid-template-columns: minmax(240px, 1fr) auto; }
+      .toolbar { grid-column: 1 / -1; padding-left: 50px; justify-content: flex-start; }
+      main { grid-template-columns: minmax(0, 1fr) 260px; }
+    }
+    @media (max-width: 720px) {
+      body { display: block; height: auto; overflow: auto; }
+      header { position: sticky; top: 0; grid-template-columns: 1fr; gap: 7px; }
+      .mode-switch { width: 100%; }
+      .mode-switch button { flex: 1; min-width: 0; }
+      .toolbar { grid-column: auto; padding: 0; overflow-x: auto; flex-wrap: nowrap; }
+      .tool, .catalog-link { flex: 0 0 auto; }
+      main { display: block; }
+      .viewer-panel { height: 67dvh; min-height: 430px; }
+      aside { border-top: 1px solid var(--line); border-left: 0; }
+      .equipment-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #status { bottom: 9px; width: calc(100% - 20px); border-radius: 6px; }
+      .hint { max-width: calc(100% - 24px); }
+    }
+  </style>
+
+<style id="public-privacy-style">
+  html{visibility:hidden}
+  img[src*="wuba-intelligence-logo"]{display:none!important}
+  .sanitized-brand-name{display:inline-flex;align-items:center;min-height:38px;color:inherit;font-size:18px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
+  .download-disabled{cursor:pointer!important}
+</style>
+<script>setTimeout(function(){document.documentElement.style.visibility="visible"},1500)</script>
+<script defer src="/sanitize.js"></script>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">58</span>
+      <div class="brand-copy">
+        <h1>浙江省人形机器人中试平台 · 互动3D沙盘</h1>
+        <div class="subtitle"><b>1:25</b> · 推荐底板 600 × 450 mm · 设备可独立打印和移动</div>
+      </div>
+    </div>
+    <div class="mode-switch" aria-label="沙盘颜色版本">
+      <button type="button" data-model-mode="color" aria-pressed="false">实物配色版</button>
+      <button type="button" data-model-mode="clay" aria-pressed="false">单色打印版</button>
+    </div>
+    <div class="toolbar" aria-label="3D查看工具">
+      <button class="tool" id="reset-view" type="button" title="回到推荐观看角度">恢复视角</button>
+      <button class="tool" id="toggle-rotate" type="button" aria-pressed="false" title="让沙盘缓慢自动旋转">自动旋转</button>
+      <button class="tool is-active" id="toggle-grid" type="button" aria-pressed="true" title="显示或隐藏参考网格">参考网格</button>
+      <button class="tool is-active" id="toggle-labels" type="button" aria-pressed="true" title="显示或隐藏设备名称">设备名称</button>
+      <button class="tool" id="fullscreen" type="button" title="进入全屏查看">全屏</button>
+      <a class="catalog-link" href="/studio.html">素材工作台</a>
+      <a class="catalog-link" href="/models.html">逐件查看</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="viewer-panel" aria-label="整体3D沙盘查看区域">
+      <div id="viewer">
+        <div id="fallback-preview"><div><div class="loader"></div><span>正在加载核心设备整体沙盘…</span></div></div>
+        <div class="hint">鼠标左键或单指拖动：旋转<br>滚轮或双指：缩放<br>右键或双指拖动：平移</div>
+        <div id="status">正在读取模型资料…</div>
+      </div>
+    </section>
+
+    <aside aria-label="沙盘概览和设备目录">
+      <section class="side-section">
+        <h2>沙盘概览</h2>
+        <p>浙江省人形机器人中试平台1:25核心设备展示沙盘。完整模型库另含专业动捕实验室、剖切围墙和实验室器材，可在V3沙盘中自由调用。</p>
+        <p class="mode-note" id="mode-note">当前显示：实物配色版</p>
+        <div class="stats">
+          <div class="stat"><b>10类</b><span>设备</span></div>
+          <div class="stat"><b>56件</b><span>室内打印件</span></div>
+          <div class="stat"><b>1:25</b><span>统一比例</span></div>
+        </div>
+        <div class="legend"><span><i class="dot"></i>实物配色展示</span><span><i class="dot gray"></i>单色打印展示</span></div>
+      </section>
+      <section class="side-section">
+        <h2>10类设备</h2>
+        <p style="margin-bottom:10px">选择设备名称，可进入对应的独立3D模型页面。</p>
+        <div id="equipment-list" class="equipment-list"></div>
+      </section>
+      <section class="side-section">
+        <h2>模型定位</h2>
+        <p>模型重点还原设备整体比例与门缝、屏幕、按钮、护罩、孔位、关节等识别特征，适用于展示与布局推演。</p>
+      </section>
+    </aside>
+  </main>
+
+  <script>
+    window.__VIEWER_CONFIG__ = { kind: "sandtable" };
+    const readMode = () => new URLSearchParams(location.search).get("mode") === "clay" ? "clay" : (localStorage.getItem("wuba-model-mode") === "clay" ? "clay" : "color");
+
+    async function loadEquipmentList() {
+      try {
+        const response = await fetch("/models/catalog.json?v=20260719-r2", { cache: "no-store" });
+        const catalog = await response.json();
+        const byId = Object.fromEntries(catalog.items.map((item) => [item.id, item]));
+        const mode = readMode();
+        document.getElementById("equipment-list").innerHTML = catalog.equipmentIds.map((id) => {
+          const item = byId[id];
+          return `<a class="equipment" href="/item.html?id=${item.id}&mode=${mode}"><span class="code">${item.code}</span><b>${item.shortTitle}</b><span>›</span></a>`;
+        }).join("");
+      } catch (error) {
+        console.error(error);
+        document.getElementById("equipment-list").textContent = "设备目录暂时未加载，请刷新网页。";
+      }
+    }
+
+    function syncModeNote(mode) {
+      document.getElementById("mode-note").textContent = mode === "clay" ? "当前显示：单色打印版" : "当前显示：实物配色版";
+      document.querySelectorAll(".equipment").forEach((link) => {
+        const url = new URL(link.href);
+        url.searchParams.set("mode", mode);
+        link.href = url;
+      });
+    }
+    window.addEventListener("wuba:viewer-ready", ({ detail }) => syncModeNote(detail.mode));
+    document.querySelectorAll("[data-model-mode]").forEach((button) => button.addEventListener("click", () => syncModeNote(button.dataset.modelMode)));
+    loadEquipmentList();
+  </script>
+  <script defer src="/assets/model-viewer.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="依据219张现场多角度照片重建的测试外场24个高细节3D模型，可逐件查看并下载STL、STP、3MF三格式打印包。">
+  <title>测试外场模块目录｜具身智能</title>
+  <link rel="stylesheet" href="/assets/hub.css">
+  <style>
+    .catalog-tools { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+    .search { width: min(360px, 100%); height: 38px; border: 1px solid #bcc8cb; border-radius: 7px; padding: 0 12px; color: var(--ink); background: #fff; font-size: 11px; }
+    .result-count { color: var(--muted); font-size: 10px; }
+    @media (max-width: 600px) { .catalog-tools { align-items: stretch; flex-direction: column; } .search { width: 100%; } }
+  </style>
+
+<style id="public-privacy-style">
+  html{visibility:hidden}
+  img[src*="wuba-intelligence-logo"]{display:none!important}
+  .sanitized-brand-name{display:inline-flex;align-items:center;min-height:38px;color:inherit;font-size:18px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
+  .download-disabled{cursor:pointer!important}
+</style>
+<script>setTimeout(function(){document.documentElement.style.visibility="visible"},1500)</script>
+<script defer src="/sanitize.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-brand" href="/"><span class="brand-logo-panel"><span class="sanitized-brand-name">具身智能</span></span><span><strong>具身智能模块化3D素材工作台</strong><small>测试外场实拍重建目录</small></span></a>
+    <nav class="site-nav" aria-label="主要页面">
+      <a href="/studio.html">工作台</a><a href="/models.html">室内设备</a><a href="/outfield.html" aria-current="page">测试外场</a><a href="/planner.html">自由排布</a><a href="/downloads.html">下载中心</a>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="workspace-intro" aria-labelledby="page-title">
+      <div class="intro-copy">
+        <p class="eyebrow">OUTFIELD MODULAR ASSETS</p>
+        <h1 id="page-title">测试外场24个独立模块</h1>
+        <p class="lead">将10组现场多角度照片中的实际设施拆成24个可重复使用的单体，包括坡道楼梯、平衡跨越、工业管线、自然地形、湿滑路面和迷彩通道。每个模型均可独立查看、下载、打印和拖入沙盘。</p>
+        <div class="intro-actions"><a class="button primary" href="/planner.html">用模块排方案</a><a class="button accent" href="/downloads.html#outfield-title">选择三格式打印包</a></div>
+        <div class="stats"><div class="stat"><b>24</b><span>实拍重建模块</span></div><div class="stat"><b>219</b><span>现场参考照片</span></div><div class="stat"><b>1:50</b><span>原始打印比例</span></div><div class="stat"><b>STL / STP / 3MF</b><span>逐件打印文件</span></div></div>
+      </div>
+      <figure class="overview-media"><img src="/images/outfield/photo/OF10.webp" alt="高架木质陡坡训练塔现场实拍" fetchpriority="high" onerror="this.onerror=null;this.src='/images/outfield/photo/OF13.webp'"><figcaption>现场多角度照片参考 · 名称按实际结构与用途整理</figcaption></figure>
+    </section>
+
+    <section aria-labelledby="catalog-title">
+      <div class="section-head"><h2 id="catalog-title">实拍重建目录</h2><p>封面为现场参考照片。打开彩色3D可旋转检查构件关系；每个下载包同时含3MF、STL和已回读的STP。</p></div>
+      <div class="catalog-tools"><input id="search" class="search" type="search" placeholder="搜索名称或用途，例如：坡道、涉水、城市" aria-label="搜索外场模块"><span id="result-count" class="result-count"></span></div>
+      <div id="filters" class="filters" aria-label="模块分类"></div>
+      <div id="catalog-grid" class="catalog-grid" aria-live="polite"><p class="empty">正在读取外场模块…</p></div>
+    </section>
+
+    <aside class="download-banner"><div><h2>可打印三格式包</h2><p>24个外场模块均可独立下载，单个ZIP同时包含STL、STP、3MF、打印说明与STP回读校验记录。</p></div><a class="button accent" href="/downloads.html#outfield-title">选择模型下载</a></aside>
+  </main>
+  <footer>具身智能 · 测试外场模块化3D素材库</footer>
+
+  <script>
+    let catalog;
+    let activeCategory = "全部";
+    const search = document.getElementById("search");
+    const grid = document.getElementById("catalog-grid");
+    const filters = document.getElementById("filters");
+    const resultCount = document.getElementById("result-count");
+    const esc = (value) => String(value).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
+    const size = (values) => values.map((value) => Number(value.toFixed(1))).join(" × ") + " mm";
+
+    function renderFilters() {
+      filters.innerHTML = ["全部", ...catalog.categories].map((category) => `<button class="filter${category === activeCategory ? " is-active" : ""}" type="button" data-category="${esc(category)}">${esc(category)}</button>`).join("");
+      filters.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => { activeCategory = button.dataset.category; renderFilters(); renderCards(); }));
+    }
+
+    function renderCards() {
+      const query = search.value.trim().toLowerCase();
+      const items = catalog.items.filter((item) => (activeCategory === "全部" || item.category === activeCategory) && (!query || `${item.title} ${item.detail} ${item.category}`.toLowerCase().includes(query)));
+      resultCount.textContent = `显示 ${items.length} / ${catalog.items.length} 个模块`;
+      grid.innerHTML = items.length ? items.map((item, index) => `<article class="asset-card">
+        <div class="asset-media"><img src="${esc(item.referenceImage)}" alt="${esc(item.title)}现场实拍参考" ${index < 3 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async" onerror="this.onerror=null;this.src='/images/outfield/photo/OF01.webp'"><span class="asset-code">${esc(item.code)}</span><span class="asset-source">实拍 · ${esc(item.photoCount)}张</span></div>
+        <div class="asset-body"><div class="asset-title"><h3>${esc(item.title)}</h3><span>${esc(item.category)}</span></div><p class="asset-detail">${esc(item.detail)}</p>
+        <div class="asset-meta"><span>${esc(item.scale)}</span><span>${size(item.dimensionsMm)}</span><span>${esc(item.method)}</span></div>
+        <div class="asset-actions"><a class="button primary" href="/item.html?id=${encodeURIComponent(item.id)}&mode=color">查看模型</a><a class="button" href="${item.printPackageFile || `/downloads.html#model-${encodeURIComponent(item.id)}`}" ${item.printPackageFile ? "download" : ""}>STL＋STP＋3MF</a><a class="button" href="${item.stepPackageFile || `/downloads.html#model-${encodeURIComponent(item.id)}`}" ${item.stepPackageFile ? "download" : ""}>设施STP</a></div></div>
+      </article>`).join("") : '<p class="empty">没有找到符合条件的模块。</p>';
+    }
+
+    search.addEventListener("input", renderCards);
+    fetch("/outfield/catalog.json?v=20260721-photo-r1", { cache: "no-store" }).then((response) => {
+      if (!response.ok) throw new Error("目录读取失败");
+      return response.json();
+    }).then((data) => { catalog = data; renderFilters(); renderCards(); }).catch((error) => { console.error(error); grid.innerHTML = '<p class="empty">外场目录加载失败，请刷新页面。</p>'; });
+  </script>
+</body>
+</html>

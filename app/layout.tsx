@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "机器人中试平台数字沙盘｜3D建模作品集",
-  description: "AI辅助3D建模、交互式沙盘、模型检视与打印交付的一体化作品集；仅公司名称与品牌标识已匿名化。",
+  title: "具身智能｜中试验证与数字模型工作台",
+  description: "具身智能机器人、中试验证、室内外三维沙盘、独立模型与可打印文件综合展示平台。",
   other: {
     "codex-preview": "development",
   },

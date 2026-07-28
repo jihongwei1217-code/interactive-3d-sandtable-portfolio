@@ -1,8 +1,8 @@
 {
-  "name": "interactive-3d-sandtable-starter",
-  "version": "1.0.0",
+  "name": "embodied-intelligence-modeling-2",
+  "version": "2.0.0",
   "private": true,
-  "description": "A sanitized, interactive and copyable 3D sandtable starter.",
+  "description": "具身智能建模 2.0 完整公开交互版。",
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",

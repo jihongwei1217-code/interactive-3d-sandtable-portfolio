@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="具身智能模块化素材库单件3D模型，可切换彩色展示与单色打印预览并下载打印文件。">
+  <title>单件3D模型｜具身智能中试平台小沙盘</title>
+  <style>
+    :root {
+      color: #182128;
+      background: #e7ecee;
+      font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+      --ink: #182128;
+      --muted: #63717a;
+      --line: #cfd7da;
+      --panel: #f8faf9;
+      --brand: #173a47;
+      --orange: #ee861f;
+      --green: #25745c;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-width: 320px; height: 100%; margin: 0; }
+    body { display: grid; grid-template-rows: auto minmax(0, 1fr); overflow: hidden; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible { outline: 3px solid rgb(238 134 31 / 32%); outline-offset: 2px; }
+    header {
+      z-index: 5;
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) auto minmax(240px, 1fr);
+      align-items: center;
+      gap: 16px;
+      min-height: 68px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgb(255 255 255 / 96%);
+      box-shadow: 0 4px 18px rgb(28 42 49 / 8%);
+    }
+    .heading { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .back {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      color: var(--brand);
+      background: #fff;
+      text-decoration: none;
+      font-size: 20px;
+    }
+    .back:hover { border-color: #92a5ad; background: #f3f6f6; }
+    .heading-copy { min-width: 0; }
+    h1 { overflow: hidden; margin: 0; font-size: clamp(16px, 2vw, 22px); line-height: 1.28; text-overflow: ellipsis; white-space: nowrap; }
+    .subtitle { margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .scale { color: var(--green); font-weight: 800; }
+    .mode-switch { display: inline-flex; padding: 3px; border: 1px solid #c8d1d4; border-radius: 8px; background: #e9eeee; }
+    .mode-switch button {
+      min-width: 106px;
+      border: 0;
+      border-radius: 5px;
+      padding: 8px 12px;
+      color: #52616a;
+      background: transparent;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .mode-switch button.is-active { color: #fff; background: var(--brand); box-shadow: 0 2px 7px rgb(22 47 57 / 18%); }
+    .toolbar { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+    .tool {
+      min-height: 36px;
+      border: 1px solid #c7d0d4;
+      border-radius: 7px;
+      padding: 7px 10px;
+      color: #26363e;
+      background: #fff;
+      font: inherit;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .tool:hover, .tool.is-active { border-color: #738f9a; background: #edf3f4; }
+    main { display: grid; grid-template-columns: minmax(0, 1fr) 330px; min-height: 0; }
+    .viewer-panel { position: relative; min-width: 0; min-height: 0; background: #e9eef0; }
+    #viewer { position: absolute; inset: 0; overflow: hidden; touch-action: none; }
+    #viewer canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+    #fallback-preview {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      color: #62737c;
+      background: #e9eef0;
+      text-align: center;
+    }
+    #fallback-preview img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 10px;
+      background: #dde4e6;
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+    #fallback-preview.is-reference img { opacity: 1; }
+    #fallback-preview.is-reference::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 56%, rgb(17 29 35 / 62%));
+    }
+    #fallback-preview > div { position: relative; z-index: 1; max-width: 470px; padding: 22px; }
+    #fallback-preview.is-reference > div {
+      margin-top: auto;
+      margin-bottom: 54px;
+      color: #fff;
+      text-shadow: 0 1px 5px rgb(0 0 0 / 45%);
+    }
+    #fallback-preview.is-reference .loader { display: none; }
+    #fallback-preview[hidden] { display: none; }
+    .loader {
+      width: 66px;
+      height: 46px;
+      margin: 0 auto 16px;
+      border: 2px solid #6b7d85;
+      border-top: 8px solid #ee861f;
+      border-radius: 7px;
+      animation: lift 1.15s ease-in-out infinite alternate;
+    }
+    @keyframes lift { to { transform: translateY(-7px); opacity: .58; } }
+    #status {
+      position: absolute;
+      left: 50%;
+      bottom: 16px;
+      z-index: 3;
+      width: max-content;
+      max-width: calc(100% - 26px);
+      transform: translateX(-50%);
+      padding: 8px 13px;
+      border: 1px solid rgb(91 109 118 / 25%);
+      border-radius: 999px;
+      color: #3f5058;
+      background: rgb(255 255 255 / 91%);
+      box-shadow: 0 7px 22px rgb(34 50 58 / 12%);
+      font-size: 11px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+    }
+    #status[data-kind="ok"] { color: #1c654d; border-color: rgb(37 116 92 / 27%); }
+    #status[data-kind="error"] { color: #a52d31; border-color: rgb(165 45 49 / 30%); }
+    aside { overflow: auto; border-left: 1px solid var(--line); background: var(--panel); }
+    .side-section { padding: 18px 18px 17px; border-bottom: 1px solid #dce2e4; }
+    .model-code { color: #c75f15; font-size: 10px; font-weight: 900; letter-spacing: .13em; }
+    aside h2 { margin: 6px 0 6px; font-size: 22px; line-height: 1.25; }
+    .fidelity { margin: 0; color: var(--green); font-size: 11px; font-weight: 700; }
+    .reference-photo { display: block; width: 100%; margin: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 7px; background: #e8edef; }
+    .reference-photo img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+    .reference-caption { margin: 7px 0 0; color: #66767d; font-size: 10px; text-align: center; }
+    .appearance-label { margin: 0 0 8px; font-size: 13px; }
+    .appearance-note { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .swatches { display: flex; gap: 7px; margin-top: 12px; }
+    .swatch { width: 28px; height: 28px; border: 2px solid #fff; border-radius: 6px; box-shadow: 0 0 0 1px rgb(39 54 62 / 18%); }
+    dl { display: grid; gap: 12px; margin: 0; }
+    dt { margin-bottom: 3px; color: #728087; font-size: 10px; }
+    dd { margin: 0; color: #2d3b42; font-size: 12px; line-height: 1.55; }
+    .plain-note { margin: 0; color: #54666e; font-size: 11px; line-height: 1.75; }
+    .plain-note b { color: #243840; }
+    .links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .links a, .links button {
+      min-height: 40px;
+      border: 1px solid #c7d1d4;
+      border-radius: 7px;
+      padding: 10px;
+      color: #29414b;
+      background: #fff;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .links .primary { border-color: var(--brand); color: #fff; background: var(--brand); }
+    @media (max-width: 980px) {
+      header { grid-template-columns: minmax(220px, 1fr) auto; }
+      .toolbar { grid-column: 1 / -1; padding-left: 50px; justify-content: flex-start; }
+      main { grid-template-columns: minmax(0, 1fr) 290px; }
+    }
+    @media (max-width: 720px) {
+      body { display: block; height: auto; overflow: auto; }
+      header { position: sticky; top: 0; grid-template-columns: 1fr; gap: 8px; }
+      .mode-switch { width: 100%; }
+      .mode-switch button { flex: 1; min-width: 0; }
+      .toolbar { grid-column: auto; padding: 0; overflow-x: auto; flex-wrap: nowrap; }
+      .tool { flex: 0 0 auto; }
+      main { display: block; }
+      .viewer-panel { height: 61dvh; min-height: 390px; }
+      #viewer { position: absolute; }
+      aside { border-top: 1px solid var(--line); border-left: 0; }
+      #status { bottom: 10px; width: calc(100% - 22px); border-radius: 7px; }
+    }
+  </style>
+
+<style id="public-privacy-style">
+  html{visibility:hidden}
+  img[src*="wuba-intelligence-logo"]{display:none!important}
+  .sanitized-brand-name{display:inline-flex;align-items:center;min-height:38px;color:inherit;font-size:18px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
+  .download-disabled{cursor:pointer!important}
+</style>
+<script>setTimeout(function(){document.documentElement.style.visibility="visible"},1500)</script>
+<script defer src="/sanitize.js"></script>
+</head>
+<body>
+  <header>
+    <div class="heading">
+      <a class="back" id="back-link" href="/models.html" aria-label="返回模型目录" title="返回模型目录">←</a>
+      <div class="heading-copy">
+        <h1 id="model-title">正在读取模型…</h1>
+        <div class="subtitle"><span class="scale" id="model-scale">—</span> · 独立查看 · 独立打印 · 自由组装</div>
+      </div>
+    </div>
+    <div class="mode-switch" aria-label="模型颜色版本">
+      <button type="button" data-model-mode="color" aria-pressed="false">实物配色版</button>
+      <button type="button" data-model-mode="clay" aria-pressed="false">单色打印版</button>
+    </div>
+    <div class="toolbar" aria-label="3D查看工具">
+      <button class="tool" id="reset-view" type="button" title="回到推荐观看角度">恢复视角</button>
+      <button class="tool" id="toggle-rotate" type="button" aria-pressed="false" title="让模型缓慢自动旋转">自动旋转</button>
+      <button class="tool" id="toggle-grid" type="button" aria-pressed="true" title="显示或隐藏尺寸参考网格">参考网格</button>
+      <button class="tool" id="fullscreen" type="button" title="进入全屏查看">全屏</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="viewer-panel" aria-label="3D模型查看区域">
+      <div id="viewer">
+        <div id="fallback-preview"><img id="fallback-photo" alt="模型参考图"><div><div class="loader"></div><span id="placeholder-text">正在加载3D模型…</span></div></div>
+        <div id="status">正在读取模型资料…</div>
+      </div>
+    </section>
+
+    <aside aria-label="模型资料与打印说明">
+      <section class="side-section">
+        <div id="model-code" class="model-code">MODEL</div>
+        <h2 id="detail-title">模型资料</h2>
+        <p class="fidelity">模块化展示模型 · 关键结构已强化</p>
+      </section>
+      <section class="side-section">
+        <figure class="reference-photo">
+          <img id="reference-photo" alt="设备现场实物参考图" decoding="async">
+        </figure>
+        <p class="reference-caption" id="reference-caption">模型参考资料</p>
+      </section>
+      <section class="side-section">
+        <h3 class="appearance-label" id="appearance-label">正在读取实物配色…</h3>
+        <p class="appearance-note" id="appearance-note">颜色来自现场照片中的主要材质。</p>
+        <div class="swatches" id="swatches" aria-label="主要配色"></div>
+      </section>
+      <section class="side-section">
+        <dl>
+          <div><dt>缩小后尺寸（长 × 宽 × 高）</dt><dd id="model-size">—</dd></div>
+          <div><dt>推荐打印方式</dt><dd id="model-method">—</dd></div>
+          <div><dt>摆放方向</dt><dd id="model-orientation">—</dd></div>
+          <div><dt>支撑建议</dt><dd id="model-support">—</dd></div>
+          <div><dt>本次精细化内容</dt><dd id="model-detail">—</dd></div>
+        </dl>
+      </section>
+      <section class="side-section">
+        <p class="plain-note" id="model-note"><b>展示版本：</b>彩色版用于模型识别与方案展示；单色版用于预览常见单色耗材的成型效果。两种版本采用相同尺寸与主体结构。</p>
+      </section>
+      <section class="side-section links">
+        <a class="primary" id="catalog-link" href="/models.html">返回目录</a>
+        <a id="planner-link" href="/planner.html">自由排布</a>
+        <a id="download-stl" href="#">下载STL＋STP＋3MF</a>
+        <a id="download-3mf" href="#" download>下载整机STP</a>
+        <a id="download-glb" href="#" download>下载彩色GLB</a>
+        <a id="download-package" href="#" download hidden>下载完整独立包</a>
+        <button id="copy-link" type="button">复制彩色版链接</button>
+        <button id="copy-gray-link" type="button">复制单色版链接</button>
+      </section>
+    </aside>
+  </main>
+
+  <script>
+    const rawRequestedId = new URLSearchParams(location.search).get("id") || "01";
+    const requestedId = rawRequestedId.toUpperCase().startsWith("OF")
+      ? rawRequestedId.replaceAll("-", "").toUpperCase()
+      : rawRequestedId.toLowerCase();
+    const referenceImages = {
+      "01": "/images/equipment/01-salt-fog.webp",
+      "02": "/images/equipment/02-dynamometer.webp",
+      "03": "/images/equipment/03-control-cabinet.webp",
+      "04": "/images/equipment/04-impact-table.webp",
+      "05": "/images/equipment/05-vibration-table.webp",
+      "06": "/images/equipment/06-operation-rack.webp",
+      "07": "/images/equipment/07-walk-in-chamber.webp",
+      "08": "/images/equipment/08-car-body.webp",
+      "09": "/images/equipment/09-humanoid.webp",
+      "10": "/images/equipment/10-q25.webp",
+    };
+    const fallbackTitles = {
+      "01": "盐雾试验设备", "02": "测功机机台", "03": "测功机控制柜", "04": "冲击试验台",
+      "05": "振动试验台", "06": "操作线架体", "07": "步入式温箱", "08": "汽车白车身",
+      "09": "人形机器人", "10": "Q20四足机器人",
+      "07a": "步入式温箱主体", "07b": "步入式温箱左门", "07c": "步入式温箱右门",
+      OF01: "双向木质斜坡平台", OF02: "绿色低台平衡平台", OF03: "灰色矮墙平衡障碍", OF04: "金属坡道楼梯组合",
+      OF05: "木质台阶浅水平台", OF06: "方管框架低通道", OF07: "低位横杆步态障碍阵列", OF08: "钢筋混凝土圆管通道",
+      OF09: "地面管线阀组阵列", OF10: "高架木质陡坡训练塔", OF11: "模拟巷道隔墙", OF12: "围框式乱石坡",
+      OF13: "三联木质楼梯平台", OF14: "大块碎石越障区", OF15: "林下松软土路", OF16: "透明踏板湿滑路面",
+      OF17: "有护栏混凝土坡道", OF18: "花纹钢板高台通道", OF19: "草地弹坑", OF20: "迷彩隔墙通道",
+      OF21: "狭窄沟槽通道", OF22: "木质小桥", OF23: "高低跨栏阵列", OF24: "草坡起伏路面",
+    };
+    const isOutfieldRequest = requestedId.startsWith("OF");
+    const referenceKey = requestedId.slice(0, 2).toUpperCase();
+    const fallbackImage = isOutfieldRequest
+      ? `/images/outfield/photo/${requestedId}.webp`
+      : (referenceImages[referenceKey] || (referenceKey === "MC" || referenceKey === "RO" || referenceKey === "LA" ? "/images/home/wuba-pilot-lab-v2.webp" : referenceImages["02"]));
+    window.__VIEWER_CONFIG__ = { kind: "item", itemId: requestedId };
+
+    const formatSize = (values) => values.map((value) => Number(value.toFixed(1))).join(" × ") + " mm";
+    const genericAppearance = (item) => item.isOutfield ? {
+      label: "外场实拍材质配色",
+      note: "按照现场照片区分不锈钢、镀锌件、木材、混凝土、土石、草地、积水和迷彩围挡。",
+      detail: item.detail || "已按实际设施拆分为可独立打印和自由组合的外场模块。",
+      palette: { base: "#c6ccd0", metal: "#9ba5aa", concrete: "#b7b4aa", wood: "#966e43", safety: "#ef9e27", dark: "#252b30" },
+    } : {
+      label: "设备现场主要配色",
+      note: "颜色依据设备现场照片中的主体、金属件、深色部件和安全标识整理。",
+      detail: "已强化设备主体轮廓、关键部件和适合缩小展示的结构层次。",
+      palette: { base: "#e2e5e3", secondary: "#b9c1c3", metal: "#8e989c", accent: "#d97928", dark: "#252b30" },
+    };
+
+    function setImageWithFallback(image, source, emergencySource) {
+      image.onerror = () => {
+        image.onerror = null;
+        image.src = emergencySource;
+      };
+      image.src = source || emergencySource;
+    }
+
+    function renderItem(item, appearance = genericAppearance(item)) {
+      document.title = `${item.title}｜${item.scale || "独立"}3D模型`;
+      document.getElementById("model-title").textContent = item.title;
+      document.getElementById("model-scale").textContent = item.scale || "展示比例";
+      document.getElementById("model-code").textContent = `MODEL ${item.code}`;
+      document.getElementById("detail-title").textContent = item.shortTitle;
+      document.getElementById("model-size").textContent = formatSize(item.dimensionsMm);
+      document.getElementById("model-method").textContent = item.method;
+      document.getElementById("model-orientation").textContent = item.orientation;
+      document.getElementById("model-support").textContent = item.support;
+      document.getElementById("model-detail").textContent = appearance.detail;
+      document.getElementById("appearance-label").textContent = appearance.label;
+      document.getElementById("appearance-note").textContent = appearance.note;
+      document.getElementById("placeholder-text").textContent = `正在加载“${item.shortTitle}”3D模型…`;
+      const referencePhoto = document.getElementById("reference-photo");
+      const source = item.referenceImage || referenceImages[item.id.slice(0, 2).toUpperCase()] || fallbackImage;
+      const emergencySource = item.isOutfield ? "/images/outfield/photo/OF01.webp" : referenceImages["02"];
+      setImageWithFallback(referencePhoto, source, emergencySource);
+      referencePhoto.alt = `${item.shortTitle}现场实物参考图`;
+      document.getElementById("reference-caption").textContent = item.isOutfield ? `现场多角度照片重建 · ${item.photoCount || 1}张参考` : "现场实物参考图";
+      const fallbackPhoto = document.getElementById("fallback-photo");
+      setImageWithFallback(fallbackPhoto, source, emergencySource);
+      fallbackPhoto.alt = referencePhoto.alt;
+      document.getElementById("fallback-preview").classList.add("is-reference");
+      const catalogLink = document.getElementById("catalog-link");
+      const backLink = document.getElementById("back-link");
+      catalogLink.href = backLink.href = item.isOutfield ? "/outfield.html" : "/models.html";
+      catalogLink.textContent = item.isOutfield ? "外场目录" : "设备目录";
+      const plannerLink = document.getElementById("planner-link");
+      plannerLink.hidden = !(item.isOutfield || item.id === "mclab");
+      plannerLink.href = item.id === "mclab" ? "/planner.html?template=wrc-motion-capture-lab" : "/planner.html";
+      plannerLink.textContent = item.id === "mclab" ? "调用动捕实验室模板" : "自由排布";
+      const stlLink = document.getElementById("download-stl");
+      stlLink.href = item.printPackageFile || `/downloads.html#model-${encodeURIComponent(item.code || item.id)}`;
+      stlLink.toggleAttribute("download", Boolean(item.printPackageFile));
+      stlLink.hidden = false;
+      const threeMfLink = document.getElementById("download-3mf");
+      threeMfLink.href = item.stepPackageFile || "#";
+      threeMfLink.hidden = !item.stepPackageFile;
+      const glbLink = document.getElementById("download-glb");
+      glbLink.href = item.glbFile || item.file || "#";
+      glbLink.hidden = !(item.glbFile || item.file);
+      const packageLink = document.getElementById("download-package");
+      packageLink.href = `/downloads.html#model-${encodeURIComponent(item.code || item.id)}`;
+      packageLink.textContent = "查看全部分件打印包";
+      packageLink.hidden = !(item.printPackageFiles?.length > 1);
+      packageLink.removeAttribute("download");
+      document.getElementById("model-note").innerHTML = item.isOutfield
+        ? "<b>模块用途：</b>该模型依据现场多角度照片按1:50重建；打印 ZIP 内同时含 STL、STP、3MF 与回读校验记录，可用于观察、CAD处理、单件打印和实体沙盘组装。"
+        : "<b>打印交付：</b>彩色版用于设备识别与方案展示；每个可打印零件均提供 STL、STP、3MF 三格式 ZIP，STP 已实际回读验证。";
+      const swatches = document.getElementById("swatches");
+      swatches.innerHTML = "";
+      [...new Set(Object.values(appearance.palette))].slice(0, 7).forEach((color) => {
+        const swatch = document.createElement("span");
+        swatch.className = "swatch";
+        swatch.style.background = color;
+        swatch.title = color;
+        swatches.append(swatch);
+      });
+      window.__ITEM_DATA__ = item;
+    }
+
+    const initialTitle = fallbackTitles[requestedId] || "3D模型资料";
+    document.getElementById("model-title").textContent = initialTitle;
+    document.getElementById("detail-title").textContent = initialTitle;
+    document.getElementById("model-code").textContent = isOutfieldRequest ? `MODEL ${requestedId.replace("OF", "OF-")}` : `MODEL ${requestedId.toUpperCase()}`;
+    document.getElementById("model-scale").textContent = isOutfieldRequest ? "1:50" : "1:25";
+    document.getElementById("placeholder-text").textContent = "参考图已就绪，交互3D正在后台加载…";
+    document.getElementById("status").textContent = "正在准备交互3D，可先查看高清参考图";
+    document.getElementById("fallback-preview").classList.add("is-reference");
+    setImageWithFallback(document.getElementById("fallback-photo"), fallbackImage, isOutfieldRequest ? "/images/outfield/photo/OF01.webp" : referenceImages["02"]);
+    setImageWithFallback(document.getElementById("reference-photo"), fallbackImage, isOutfieldRequest ? "/images/outfield/photo/OF01.webp" : referenceImages["02"]);
+    document.getElementById("reference-caption").textContent = isOutfieldRequest ? "现场多角度照片参考" : "现场实物参考图";
+    document.querySelectorAll("[data-model-mode]").forEach((button) => button.classList.toggle("is-active", button.dataset.modelMode === (new URLSearchParams(location.search).get("mode") === "clay" ? "clay" : "color")));
+
+    window.addEventListener("wuba:modeldata", ({ detail: { item, appearance } }) => renderItem(item, appearance));
+    fetch("/models/catalog.json?v=20260719-r2", { cache: "no-store" })
+      .then((response) => { if (!response.ok) throw new Error("模型资料读取失败"); return response.json(); })
+      .then((catalog) => {
+        const normalized = requestedId.replaceAll("-", "").toLowerCase();
+        const item = catalog.items.find((candidate) => candidate.id.replaceAll("-", "").toLowerCase() === normalized);
+        if (!item) throw new Error("没有找到这个编号的模型");
+        renderItem(item);
+      })
+      .catch((error) => {
+        console.error(error);
+        document.getElementById("status").textContent = "已显示参考图；详细资料可稍后刷新重试";
+        document.getElementById("status").dataset.kind = "error";
+      });
+
+    async function copyLink(mode) {
+      const url = new URL(location.href);
+      url.searchParams.set("id", requestedId);
+      url.searchParams.set("mode", mode);
+      await navigator.clipboard.writeText(url.href);
+      const button = document.getElementById(mode === "clay" ? "copy-gray-link" : "copy-link");
+      const original = button.textContent;
+      button.textContent = "已复制";
+      setTimeout(() => { button.textContent = original; }, 1300);
+    }
+    document.getElementById("copy-link").addEventListener("click", () => copyLink("color"));
+    document.getElementById("copy-gray-link").addEventListener("click", () => copyLink("clay"));
+    window.addEventListener("wuba:viewer-error", ({ detail }) => {
+      const fallback = document.getElementById("fallback-preview");
+      fallback.classList.add("is-reference");
+      const message = String(detail?.message || "");
+      const isGraphicsIssue = /webgl|context|graphics|gpu/i.test(message);
+      document.getElementById("placeholder-text").textContent = isGraphicsIssue
+        ? "当前设备暂不支持交互3D，已自动显示高清参考图。"
+        : "交互3D暂未载入，已自动显示高清参考图。";
+      document.getElementById("status").textContent = "参考图和下载文件均可正常使用";
+      document.getElementById("status").dataset.kind = "ok";
+    });
+  </script>
+  <script defer src="/assets/model-viewer.js"></script>
+</body>
+</html>

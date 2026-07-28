@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="具身智能模块化沙盘3D打印文件下载中心，每个可打印零件均提供 STL、STP、3MF 三格式校验包。">
+  <title>3D打印文件下载中心｜具身智能</title>
+  <link rel="stylesheet" href="/assets/hub.css">
+  <style>
+    .download-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 24px; padding: 20px 0 24px; border-bottom: 1px solid var(--line); }
+    .download-hero h1 { max-width: 840px; }
+    .file-table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); background: #fff; }
+    .file-table th, .file-table td { padding: 9px 10px; border-bottom: 1px solid #dce3e4; text-align: left; vertical-align: middle; font-size: 10px; }
+    .file-table th { color: #fff; background: var(--brand); font-size: 9px; }
+    .file-table tr:hover td { background: #f3f6f5; }
+    .file-name { display: flex; align-items: center; gap: 9px; min-width: 220px; }
+    .file-name img { width: 64px; height: 42px; flex: 0 0 auto; border-radius: 4px; object-fit: cover; background: #e2e7e8; }
+    .file-name b { display: block; color: var(--ink); font-size: 11px; }
+    .file-name small { display: block; margin-top: 2px; color: var(--muted); font-size: 8px; }
+    .table-link { display: inline-block; border: 1px solid #b9c6c9; border-radius: 5px; padding: 6px 8px; color: #29434d; background: #fff; text-decoration: none; font-size: 9px; font-weight: 800; white-space: nowrap; }
+    .table-link.primary { border-color: var(--brand); color: #fff; background: var(--brand); }
+    .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .guide { padding: 14px; border-top: 3px solid #718890; background: #fff; }
+    .guide b { color: var(--brand); font-size: 12px; }
+    .guide p { margin: 6px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+    .table-wrap { overflow-x: auto; border-radius: 7px; }
+    @media (max-width: 760px) { .download-hero { grid-template-columns: 1fr; } .guide-grid { grid-template-columns: 1fr; } }
+  </style>
+
+<style id="public-privacy-style">
+  html{visibility:hidden}
+  img[src*="wuba-intelligence-logo"]{display:none!important}
+  .sanitized-brand-name{display:inline-flex;align-items:center;min-height:38px;color:inherit;font-size:18px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
+  .download-disabled{cursor:pointer!important}
+</style>
+<script>setTimeout(function(){document.documentElement.style.visibility="visible"},1500)</script>
+<script defer src="/sanitize.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-brand" href="/"><span class="brand-logo-panel"><span class="sanitized-brand-name">具身智能</span></span><span><strong>3D打印文件下载中心</strong><small id="download-summary">正在读取 STL · STP · 3MF 校验包</small></span></a>
+    <nav class="site-nav" aria-label="主要页面"><a href="/studio.html">工作台</a><a href="/models.html">室内设备</a><a href="/outfield.html">测试外场</a><a href="/planner.html">自由排布</a><a href="/downloads.html" aria-current="page">下载中心</a></nav>
+  </header>
+
+  <main class="shell">
+    <section class="download-hero" aria-labelledby="page-title">
+      <div><p class="eyebrow">PRINTABLE ASSET DOWNLOADS</p><h1 id="page-title">每个零件一键下载，包内同时含 STL、STP、3MF</h1><p class="lead">STL 可直接进入通用切片软件，3MF 保留毫米单位，STP 用于 CAD 打开和继续处理。每个 STP 都已实际回读并核验拓扑与尺寸；大型场景按零件拆包，避免下载失败。</p></div>
+      <div class="intro-actions"><a class="button accent" href="#indoor-title">选择打印零件</a><a class="button" href="#scene-title">场景 STP 装配体</a><a class="button" href="/downloads/modular-kit-v1/04-guides-and-catalog/README_%E6%89%93%E5%8D%B0%E4%B8%8E%E6%8B%BC%E8%A3%85%E6%8C%87%E5%8D%97.txt" download>打印指南</a></div>
+    </section>
+
+    <section aria-labelledby="indoor-title"><div class="section-head"><h2 id="indoor-title">室内设备与场景组件</h2><p>原始比例1:25。每一行对应一个可打印实体，主按钮下载的 ZIP 内同时包含 STL、STP、3MF、打印说明和 STP 回读校验记录。</p></div><div class="table-wrap"><table class="file-table"><thead><tr><th>模型 / 打印件</th><th>比例</th><th>缩小后尺寸</th><th>打印方式</th><th>下载</th></tr></thead><tbody id="indoor-files"><tr><td colspan="5">正在读取文件清单…</td></tr></tbody></table></div></section>
+
+    <section aria-labelledby="outfield-title"><div class="section-head"><h2 id="outfield-title">测试外场 · 24件</h2><p>原始比例1:50。每个外场模块同样提供 STL、STP、3MF 三格式包，可单独打印后自由组合。</p></div><div class="table-wrap"><table class="file-table"><thead><tr><th>模型</th><th>类别</th><th>缩小后尺寸</th><th>支撑建议</th><th>下载</th></tr></thead><tbody id="outfield-files"><tr><td colspan="5">正在读取文件清单…</td></tr></tbody></table></div></section>
+
+    <section aria-labelledby="scene-title"><div class="section-head"><h2 id="scene-title">完整场景 STP 装配体</h2><p>用于 SolidWorks、Fusion 360、FreeCAD、Creo、NX 等 CAD 软件查看整体布局。场景内保留命名装配节点；最终打印请使用上方完整精度的逐件三格式包。</p></div><div class="table-wrap"><table class="file-table"><thead><tr><th>场景</th><th>区域</th><th>包围尺寸</th><th>装配节点</th><th>下载</th></tr></thead><tbody id="scene-files"><tr><td colspan="5">正在读取场景清单…</td></tr></tbody></table></div></section>
+
+    <section aria-labelledby="guide-title"><div class="section-head"><h2 id="guide-title">打印前设置</h2></div><div class="guide-grid"><article class="guide"><b>快速验证</b><p>0.4 mm喷嘴、0.20 mm层高、10%至15%填充、2至3层外墙，适合先验证尺寸和布局。</p></article><article class="guide"><b>精细展示</b><p>0.12至0.16 mm层高。机器人、螺旋楼梯和细扶手优先使用树脂打印或开启树状支撑。</p></article><article class="guide"><b>文件选择</b><p>打印优先使用3MF或STL；需要在CAD中检查、缩放或继续拆件时使用STP。所有文件单位均为毫米。</p></article></div><p class="source-note"><b>质量校验：</b>STL/3MF 已检查闭合边、非流形边和退化三角形；每个 STP 均在生成后由 OpenCascade 重新导入，核验标准文件头、拓扑有效性和包围尺寸。正式打印前仍应由操作人员确认喷嘴、层高、悬空面、壁厚、底面、装配间隙与支撑。</p></section>
+  </main>
+  <footer>具身智能 · 模块化沙盘3D打印文件下载中心</footer>
+
+  <script>
+    const esc = (value) => String(value).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
+    const size = (values) => values.map((value) => Number(value.toFixed(1))).join(" × ") + " mm";
+    Promise.all([
+      fetch("/models/catalog.json?v=20260725-print-v3", { cache: "no-store" }),
+      fetch("/workbench/assets/catalog/models.json?v=20260725-print-v3", { cache: "no-store" }),
+      fetch("/step-catalog.json?v=20260725-print-v3", { cache: "no-store" }),
+    ]).then(async ([catalogResponse, workbenchResponse, stepResponse]) => {
+      if (!catalogResponse.ok || !workbenchResponse.ok || !stepResponse.ok) throw new Error("文件目录读取失败");
+      return [await catalogResponse.json(), await workbenchResponse.json(), await stepResponse.json()];
+    }).then(([catalog, workbench, stepCatalog]) => {
+      const byId = Object.fromEntries(catalog.items.map((item) => [item.id, item]));
+      const itemByCode = Object.fromEntries(catalog.equipmentIds.map((id) => byId[id]).map((item) => [item.code, item]));
+      const assemblyByCode = Object.fromEntries(stepCatalog.assemblyPackages.map((entry) => [entry.code, entry]));
+      document.getElementById("download-summary").textContent = `${stepCatalog.counts.printPackages} 个 STL＋STP＋3MF 打印包 · ${stepCatalog.counts.scenePackages} 个场景 STP 包`;
+      document.getElementById("indoor-title").textContent = `室内设备与场景组件 · ${workbench.printablePieceCount} 件`;
+      document.getElementById("indoor-files").innerHTML = workbench.models.flatMap((model) => model.pieces.map((piece, index) => {
+        const item = itemByCode[model.code];
+        const image = item?.referenceImage || "/images/home/wuba-pilot-lab-v2.webp";
+        const packageFile = piece.printPackageFile;
+        const anchor = index === 0 ? ` id="model-${esc(model.code)}"` : "";
+        return `<tr${anchor}><td><div class="file-name"><img src="${esc(image)}" alt="${esc(piece.title)}参考图" onerror="this.onerror=null;this.src='/images/home/wuba-pilot-lab-v2.webp'"><span><b>${esc(piece.title)}</b><small>${esc(model.code)} · ${esc(model.title)}</small></span></div></td><td>${esc(model.scale)}</td><td>${size(piece.sizeMm)}</td><td>${esc(model.method || item?.method || "FDM / 树脂")}</td><td><a class="table-link primary" href="${esc(packageFile)}" download>STL＋STP＋3MF</a> ${index === 0 && assemblyByCode[model.code] ? `<a class="table-link" href="${esc(assemblyByCode[model.code].url)}" download>整机STP</a>` : ""} <a class="table-link" href="/item.html?id=${encodeURIComponent(item?.id || model.code)}&mode=color">查看</a></td></tr>`;
+      })).join("");
+      document.getElementById("outfield-files").innerHTML = catalog.outfieldIds.map((id) => { const item=byId[id]; return `<tr id="model-${esc(item.id)}"><td><div class="file-name"><img src="${esc(item.referenceImage)}" alt="${esc(item.shortTitle)}现场参考图" onerror="this.onerror=null;this.src='/images/outfield/photo/OF01.webp'"><span><b>${esc(item.shortTitle)}</b><small>${esc(item.code)} · 实拍重建 · ${esc(item.photoCount)}张参考</small></span></div></td><td>${esc(item.category)}</td><td>${size(item.dimensionsMm)}</td><td>${esc(item.support)}</td><td><a class="table-link primary" href="${esc(item.printPackageFile)}" download>STL＋STP＋3MF</a> ${item.stepPackageFile && item.stepPackageFile !== item.printPackageFile ? `<a class="table-link" href="${esc(item.stepPackageFile)}" download>设施STP</a>` : ""} <a class="table-link" href="/item.html?id=${encodeURIComponent(item.id)}&mode=color">查看</a></td></tr>`; }).join("");
+      document.getElementById("scene-title").textContent = `完整场景 STP 装配体 · ${stepCatalog.counts.scenePackages} 套`;
+      document.getElementById("scene-files").innerHTML = stepCatalog.scenePackages.map((scene) => `<tr><td><div class="file-name"><span><b>${esc(scene.title)}</b><small>${esc(scene.number)} · ${esc(scene.kind)}</small></span></div></td><td>${esc(scene.zone || "mixed")}</td><td>${size(scene.dimensionsMm)}</td><td>${esc(scene.componentCount)}</td><td><a class="table-link primary" href="${esc(scene.url)}" download>下载STP ZIP</a> <a class="table-link" href="/planner.html?template=${encodeURIComponent(scene.templateId)}">打开沙盘</a></td></tr>`).join("");
+    }).catch((error) => { console.error(error); document.getElementById("indoor-files").innerHTML='<tr><td colspan="5">文件清单加载失败，请刷新页面。</td></tr>'; document.getElementById("outfield-files").innerHTML='<tr><td colspan="5">文件清单加载失败，请刷新页面。</td></tr>'; document.getElementById("scene-files").innerHTML='<tr><td colspan="5">场景清单加载失败，请刷新页面。</td></tr>'; });
+  </script>
+</body>
+</html>

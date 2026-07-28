@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="浙江省人形机器人中试平台1:25模块化沙盘，含中试设备、机器人、专业动捕实验室、剖切围墙及独立打印件。">
+  <title>逐件3D模型｜具身智能中试平台小沙盘</title>
+  <style>
+    :root {
+      font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+      color: #1b252a;
+      background: #edf1f1;
+      --ink: #1b252a;
+      --muted: #647279;
+      --line: #d1d9da;
+      --brand: #173a47;
+      --brand-2: #235667;
+      --accent: #e8791c;
+      --green: #28735c;
+      --paper: #fff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { min-width: 320px; margin: 0; background: #edf1f1; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible { outline: 3px solid rgb(232 121 28 / 34%); outline-offset: 2px; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto auto;
+      align-items: center;
+      gap: 14px;
+      min-height: 68px;
+      padding: 10px clamp(14px, 3vw, 34px);
+      border-bottom: 1px solid rgb(255 255 255 / 16%);
+      color: #fff;
+      background: rgb(19 49 60 / 97%);
+      box-shadow: 0 5px 20px rgb(20 41 49 / 17%);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .logo { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 auto; border: 2px solid rgb(255 255 255 / 88%); border-radius: 7px; font-weight: 900; }
+    .brand strong { display: block; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+    .brand small { display: block; margin-top: 2px; color: #b9cbd1; font-size: 10px; }
+    .mode-switch { display: inline-flex; padding: 3px; border: 1px solid rgb(255 255 255 / 24%); border-radius: 8px; background: rgb(4 22 29 / 28%); }
+    .mode-switch button { min-width: 104px; border: 0; border-radius: 5px; padding: 8px 11px; color: #cad7da; background: transparent; font: inherit; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .mode-switch button.is-active { color: var(--brand); background: #fff; }
+    .overall-link { padding: 9px 12px; border: 1px solid rgb(255 255 255 / 28%); border-radius: 7px; color: #fff; text-decoration: none; font-size: 11px; font-weight: 800; }
+    .overall-link:hover { background: rgb(255 255 255 / 10%); }
+    main { max-width: 1380px; margin: 0 auto; padding: 24px clamp(14px, 3vw, 34px) 56px; }
+    .overview {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 26px;
+      align-items: end;
+      padding: 22px 0 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow { margin: 0 0 7px; color: var(--green); font-size: 10px; font-weight: 900; letter-spacing: .11em; }
+    h1 { margin: 0; font-size: clamp(25px, 3.6vw, 42px); line-height: 1.16; }
+    .lead { max-width: 760px; margin: 10px 0 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
+    .mode-explain { margin-top: 12px; padding-left: 11px; border-left: 3px solid var(--accent); color: #3f525a; font-size: 11px; line-height: 1.65; }
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(96px, 1fr)); gap: 8px; }
+    .stat { min-width: 105px; padding: 12px 13px; border: 1px solid var(--line); border-radius: 7px; background: rgb(255 255 255 / 74%); }
+    .stat b { display: block; color: var(--brand); font-size: 20px; }
+    .stat span { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin: 28px 0 13px; }
+    h2 { margin: 0; font-size: 21px; }
+    .section-head p { max-width: 650px; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+    .equipment-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+    .card { overflow: hidden; border: 1px solid var(--line); border-radius: 7px; background: var(--paper); box-shadow: 0 8px 22px rgb(26 49 58 / 6%); }
+    .visual { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-bottom: 1px solid #dde3e4; background: #e6ebeb; }
+    .visual img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .28s ease; }
+    .card:hover .visual img { transform: scale(1.018); }
+    .number { position: absolute; z-index: 2; top: 10px; left: 10px; padding: 4px 6px; border-radius: 4px; color: #fff; background: rgb(20 45 55 / 82%); font-size: 9px; font-weight: 900; letter-spacing: .08em; }
+    .version-badge { position: absolute; z-index: 2; right: 10px; bottom: 9px; padding: 4px 7px; border: 1px solid rgb(255 255 255 / 55%); border-radius: 4px; color: #fff; background: rgb(20 45 55 / 75%); font-size: 9px; font-weight: 800; backdrop-filter: blur(7px); }
+    .card-body { padding: 13px; }
+    .title-row { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+    .card h3 { margin: 0; font-size: 16px; }
+    .method { flex: 0 0 auto; padding: 4px 6px; border-radius: 4px; color: #52636a; background: #edf1f1; font-size: 9px; }
+    .detail { min-height: 35px; margin: 7px 0 10px; color: var(--muted); font-size: 10px; line-height: 1.7; }
+    .meta-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 11px; }
+    .size { color: #45565d; font-size: 10px; }
+    .swatches { display: flex; gap: 4px; }
+    .swatch { width: 15px; height: 15px; border: 1px solid rgb(30 43 49 / 20%); border-radius: 3px; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 45%); }
+    .card-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .card-links a { min-height: 36px; padding: 9px 8px; border: 1px solid #bdc9cc; border-radius: 6px; color: #30464f; background: #fff; font-size: 10px; font-weight: 800; text-align: center; text-decoration: none; }
+    .card-links a.is-primary { border-color: var(--brand); color: #fff; background: var(--brand); }
+    .card-links a:hover { filter: brightness(.96); }
+    .parts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .part { display: flex; align-items: center; gap: 9px; min-height: 58px; padding: 9px; border: 1px solid var(--line); border-radius: 6px; background: rgb(255 255 255 / 78%); text-decoration: none; }
+    .part:hover { border-color: #8aa0a8; background: #fff; }
+    .part-code { display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 auto; border-radius: 5px; color: #fff; background: var(--brand); font-size: 10px; font-weight: 900; }
+    .part b { display: block; color: var(--ink); font-size: 11px; }
+    .part small { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; }
+    .part a { display: inline-block; margin-top: 4px; color: var(--brand-2); font-size: 9px; font-weight: 800; }
+    .howto { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .step { padding: 14px; border-top: 3px solid #6f858e; background: #fff; }
+    .step b { display: block; color: var(--brand); font-size: 12px; }
+    .step p { margin: 6px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+    .notice { margin: 18px 0 0; padding: 12px 14px; border: 1px solid #d7dfe0; border-left: 3px solid var(--accent); background: #fff; color: #53646b; font-size: 10px; line-height: 1.75; }
+    #load-error { grid-column: 1 / -1; padding: 18px; border: 1px solid #e0b8b8; background: #fff3f3; color: #9c3131; font-size: 12px; }
+    footer { padding: 22px; color: #77858a; text-align: center; font-size: 9px; }
+    @media (max-width: 1020px) {
+      .topbar { grid-template-columns: minmax(220px, 1fr) auto; }
+      .overall-link { display: none; }
+      .overview { grid-template-columns: 1fr; align-items: start; }
+      .stats { max-width: 520px; }
+      .equipment-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .parts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 650px) {
+      .topbar { position: relative; grid-template-columns: 1fr; gap: 8px; }
+      .brand small { display: none; }
+      .mode-switch { width: 100%; }
+      .mode-switch button { flex: 1; min-width: 0; }
+      main { padding-top: 12px; }
+      .overview { padding-top: 12px; }
+      .stats { grid-template-columns: repeat(3, 1fr); width: 100%; }
+      .stat { min-width: 0; padding: 10px; }
+      .stat b { font-size: 16px; }
+      .section-head { align-items: start; flex-direction: column; gap: 5px; }
+      .equipment-grid, .parts, .howto { grid-template-columns: 1fr; }
+      .detail { min-height: 0; }
+    }
+  </style>
+
+<style id="public-privacy-style">
+  html{visibility:hidden}
+  img[src*="wuba-intelligence-logo"]{display:none!important}
+  .sanitized-brand-name{display:inline-flex;align-items:center;min-height:38px;color:inherit;font-size:18px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
+  .download-disabled{cursor:pointer!important}
+</style>
+<script>setTimeout(function(){document.documentElement.style.visibility="visible"},1500)</script>
+<script defer src="/sanitize.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">58</span>
+      <span><strong>浙江省人形机器人中试平台</strong><small>1:25 模块化展示沙盘 · 逐件模型目录</small></span>
+    </div>
+    <div class="mode-switch" aria-label="目录预览颜色版本">
+      <button type="button" data-catalog-mode="color">实物配色版</button>
+      <button type="button" data-catalog-mode="clay">单色打印版</button>
+    </div>
+    <a class="overall-link" href="/studio.html">返回素材工作台</a>
+  </header>
+
+  <main>
+    <section class="overview" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">INDEPENDENT 3D OBJECTS</p>
+        <h1 id="page-title">中试平台设备3D模型目录</h1>
+        <p class="lead">汇总中试设备、机器人、专业动捕实验室与剖切空间组件。每项均提供彩色3D、单色打印预览和独立打印文件。</p>
+        <p class="mode-explain" id="mode-explain">已选择实物配色版；进入单件模型后仍可随时切换展示版本。</p>
+      </div>
+      <div class="stats" aria-label="沙盘数据">
+        <div class="stat"><b id="model-count">—</b><span>室内模型</span></div>
+        <div class="stat"><b id="piece-count">—</b><span>独立打印件</span></div>
+        <div class="stat"><b>600×450</b><span>推荐底板 / mm</span></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="equipment-title">
+      <div class="section-head">
+        <h2 id="equipment-title">设备模型与实物参考</h2>
+        <p>卡片封面为对应设备的现场实物照片。选择下方入口，可进入可旋转、缩放的独立3D模型页面。</p>
+      </div>
+      <div id="equipment-grid" class="equipment-grid" aria-live="polite"></div>
+    </section>
+
+    <section aria-labelledby="parts-title">
+      <div class="section-head">
+        <h2 id="parts-title">独立打印与拼装件</h2>
+        <p>大型设备、动捕实验室和剖切围墙已按打印平台拆件；每一件均可单独下载包含 STL、STP、3MF 与回读校验记录的 ZIP。</p>
+      </div>
+      <div id="parts-grid" class="parts" aria-live="polite"></div>
+    </section>
+
+    <section aria-labelledby="guide-title">
+      <div class="section-head"><h2 id="guide-title">模型应用</h2></div>
+      <div class="howto">
+        <article class="step"><b>设备识别与方案汇报</b><p>实物参考图与彩色3D模型一一对应，便于快速识别设备及其主要外观特征。</p></article>
+        <article class="step"><b>比例展示与布局推演</b><p>所有模型统一采用1:25比例，可在600 × 450 mm推荐底板上进行组合展示。</p></article>
+        <article class="step"><b>独立打印与模块化组装</b><p>设备、动捕器材、地坪与墙板均可分别打印，自由摆放后再组合成完整室内场景。</p></article>
+      </div>
+      <p class="notice"><b>模型定位：</b>本项目为展示型沙盘模型，重点还原设备整体比例与门缝、屏幕、按钮、护罩、关节、孔位等识别特征，适用于平台介绍、方案汇报和空间布局展示。</p>
+    </section>
+  </main>
+
+  <footer>具身智能 · 浙江省人形机器人中试平台 · 1:25 模块化展示沙盘</footer>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    let currentMode = params.get("mode") === "clay" ? "clay" : (localStorage.getItem("wuba-model-mode") === "clay" ? "clay" : "color");
+    let equipmentItems = [];
+
+    const referenceImages = {
+      "01": "/images/equipment/01-salt-fog.webp",
+      "02": "/images/equipment/02-dynamometer.webp",
+      "03": "/images/equipment/03-control-cabinet.webp",
+      "04": "/images/equipment/04-impact-table.webp",
+      "05": "/images/equipment/05-vibration-table.webp",
+      "06": "/images/equipment/06-operation-rack.webp",
+      "07": "/images/equipment/07-walk-in-chamber.webp",
+      "08": "/images/equipment/08-car-body.webp",
+      "09": "/images/equipment/09-humanoid.webp",
+      "10": "/images/equipment/10-q25.webp",
+    };
+    const formatSize = (item) => item.dimensionsMm.map((value) => Number(value.toFixed(1))).join(" × ") + " mm";
+    const itemUrl = (id, mode) => `/item.html?id=${encodeURIComponent(id)}&mode=${mode}`;
+    const uniqueColors = (appearance) => [...new Set(Object.values(appearance.palette))].slice(0, 6);
+
+    function syncModeUi() {
+      document.querySelectorAll("[data-catalog-mode]").forEach((button) => {
+        const active = button.dataset.catalogMode === currentMode;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      document.querySelectorAll("[data-mode-link]").forEach((link) => {
+        link.classList.toggle("is-primary", link.dataset.modeLink === currentMode);
+      });
+      document.getElementById("mode-explain").textContent = currentMode === "color"
+        ? "已选择实物配色版；进入单件模型后仍可随时切换展示版本。"
+        : "已选择单色打印版；用于呈现常见单色耗材打印后的整体视觉效果。";
+    }
+
+    async function loadCatalog() {
+      try {
+        const [catalogResponse, appearanceResponse, workbenchResponse] = await Promise.all([
+          fetch("/models/catalog.json?v=20260719-r2", { cache: "no-store" }),
+          fetch("/models/appearance.json?v=20260719-r2", { cache: "no-store" }),
+          fetch("/workbench/assets/catalog/models.json?v=20260721-r1", { cache: "no-store" }),
+        ]);
+        if (!catalogResponse.ok || !appearanceResponse.ok || !workbenchResponse.ok) throw new Error("目录读取失败");
+        const catalog = await catalogResponse.json();
+        const appearanceData = await appearanceResponse.json();
+        const workbenchCatalog = await workbenchResponse.json();
+        const appearance = appearanceData.profiles;
+        const byId = Object.fromEntries(catalog.items.map((item) => [item.id, item]));
+        equipmentItems = catalog.equipmentIds.map((id) => byId[id]);
+        const itemByCode = Object.fromEntries(equipmentItems.map((item) => [item.code, item]));
+        document.getElementById("model-count").textContent = `${workbenchCatalog.modelCount} 项`;
+        document.getElementById("piece-count").textContent = `${workbenchCatalog.printablePieceCount} 件`;
+        document.getElementById("parts-title").textContent = `${workbenchCatalog.printablePieceCount} 件独立打印与拼装件`;
+
+        document.getElementById("equipment-grid").innerHTML = equipmentItems.map((item, index) => {
+          const profile = appearance[item.id.slice(0, 2).toUpperCase()] || appearance["01"];
+          const swatches = uniqueColors(profile).map((color) => `<span class="swatch" style="background:${color}" title="${color}"></span>`).join("");
+          const image = item.referenceImage || referenceImages[item.id] || referenceImages[item.id.slice(0, 2)] || "/images/home/wuba-pilot-lab-v2.webp";
+          return `<article class="card">
+            <div class="visual">
+              <img src="${image}" alt="${item.shortTitle}参考图" ${index < 3 ? "fetchpriority=\"high\"" : "loading=\"lazy\""} decoding="async" onerror="this.onerror=null;this.src='/images/home/wuba-pilot-lab-v2.webp'">
+              <span class="number">NO.${item.code}</span><span class="version-badge">实物参考图</span>
+            </div>
+            <div class="card-body">
+              <div class="title-row"><h3>${item.title}</h3><span class="method">${item.method}</span></div>
+              <p class="detail">${profile.detail}</p>
+              <div class="meta-row"><span class="size">缩小后 ${formatSize(item)}</span><span class="swatches" aria-label="主要配色">${swatches}</span></div>
+              <div class="card-links"><a data-mode-link="color" href="${itemUrl(item.id, "color")}">彩色3D</a><a data-mode-link="clay" href="${itemUrl(item.id, "clay")}">单色3D</a><a href="${item.printPackageFile || `/downloads.html#model-${encodeURIComponent(item.code)}`}" ${item.printPackageFile ? "download" : ""}>三格式打印包</a></div>
+            </div>
+          </article>`;
+        }).join("");
+
+        document.getElementById("parts-grid").innerHTML = workbenchCatalog.models.flatMap((model) => model.pieces.map((piece) => {
+          const item = itemByCode[model.code];
+          const sizeText = piece.sizeMm.map((value) => Number(value.toFixed(1))).join(" × ") + " mm";
+          return `<div class="part"><span class="part-code">${model.code}</span><span><b>${piece.title}</b><small>${sizeText}</small><a href="${piece.printPackageFile}" download>下载STL＋STP＋3MF</a> · <a href="${itemUrl(item?.id || model.code, currentMode)}">查看3D</a></span></div>`;
+        })).join("");
+        syncModeUi();
+      } catch (error) {
+        console.error(error);
+        document.getElementById("equipment-grid").innerHTML = `<p id="load-error">设备目录加载异常，请刷新页面。</p>`;
+      }
+    }
+
+    document.querySelectorAll("[data-catalog-mode]").forEach((button) => button.addEventListener("click", () => {
+      currentMode = button.dataset.catalogMode;
+      localStorage.setItem("wuba-model-mode", currentMode);
+      const url = new URL(location.href);
+      url.searchParams.set("mode", currentMode);
+      history.replaceState(null, "", url);
+      syncModeUi();
+      document.querySelectorAll(".part a[href*='item.html']").forEach((link) => {
+        const target = new URL(link.href);
+        target.searchParams.set("mode", currentMode);
+        link.href = target;
+      });
+    }));
+
+    loadCatalog();
+  </script>
+</body>
+</html>
